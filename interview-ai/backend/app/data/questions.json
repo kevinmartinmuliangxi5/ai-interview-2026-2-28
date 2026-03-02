@@ -1,0 +1,128 @@
+[
+  {
+    "id": "4f3af2b0-9e8f-48fe-8d05-8f52332f1001",
+    "question_type": "COMPREHENSIVE_ANALYSIS",
+    "content": "当前部分基层单位在“接诉即办”中存在重接诉轻办诉的问题。请谈谈你的看法。",
+    "core_keywords": ["接诉即办", "法治中国建设", "基层治理"],
+    "time_limit_seconds": 180
+  },
+  {
+    "id": "4f3af2b0-9e8f-48fe-8d05-8f52332f1002",
+    "question_type": "COMPREHENSIVE_ANALYSIS",
+    "content": "面对数字治理中“数据孤岛”问题，你认为应如何推进跨部门协同？",
+    "core_keywords": ["数字治理", "系统思维", "协同联动"],
+    "time_limit_seconds": 180
+  },
+  {
+    "id": "4f3af2b0-9e8f-48fe-8d05-8f52332f1003",
+    "question_type": "COMPREHENSIVE_ANALYSIS",
+    "content": "请结合共同富裕背景，谈谈如何提升公共服务均等化水平。",
+    "core_keywords": ["共同富裕", "公共服务", "均等化"],
+    "time_limit_seconds": 180
+  },
+  {
+    "id": "4f3af2b0-9e8f-48fe-8d05-8f52332f2001",
+    "question_type": "PLANNING_ORGANIZATION",
+    "content": "单位计划开展面向社区居民的防灾宣传活动，请说明你的组织方案。",
+    "core_keywords": ["安全预案", "经费预算", "人员分工"],
+    "time_limit_seconds": 180
+  },
+  {
+    "id": "4f3af2b0-9e8f-48fe-8d05-8f52332f2002",
+    "question_type": "PLANNING_ORGANIZATION",
+    "content": "请组织一次政务服务窗口业务培训，重点说明流程与风险控制。",
+    "core_keywords": ["时间节点", "风险评估", "复盘总结"],
+    "time_limit_seconds": 180
+  },
+  {
+    "id": "4f3af2b0-9e8f-48fe-8d05-8f52332f2003",
+    "question_type": "PLANNING_ORGANIZATION",
+    "content": "你负责组织一次青年志愿服务活动，请谈谈具体执行方案。",
+    "core_keywords": ["前期调研", "应急方案", "长效机制"],
+    "time_limit_seconds": 180
+  },
+  {
+    "id": "4f3af2b0-9e8f-48fe-8d05-8f52332f3001",
+    "question_type": "EMERGENCY_RESPONSE",
+    "content": "社区突发停水，居民情绪激动并传播不实信息，你会如何处置？",
+    "core_keywords": ["应急响应", "信息澄清", "协同处置"],
+    "time_limit_seconds": 180
+  },
+  {
+    "id": "4f3af2b0-9e8f-48fe-8d05-8f52332f3002",
+    "question_type": "EMERGENCY_RESPONSE",
+    "content": "办事大厅突发系统故障导致排队拥堵，你如何稳定现场并恢复秩序？",
+    "core_keywords": ["现场秩序", "群众安抚", "快速恢复"],
+    "time_limit_seconds": 180
+  },
+  {
+    "id": "4f3af2b0-9e8f-48fe-8d05-8f52332f3003",
+    "question_type": "EMERGENCY_RESPONSE",
+    "content": "单位活动现场出现人员轻伤，你作为负责人如何应对？",
+    "core_keywords": ["紧急处置", "信息上报", "复盘改进"],
+    "time_limit_seconds": 180
+  },
+  {
+    "id": "4f3af2b0-9e8f-48fe-8d05-8f52332f4001",
+    "question_type": "INTERPERSONAL_RELATIONSHIPS",
+    "content": "你与同事在工作方案上产生分歧，双方情绪都较激动，你怎么办？",
+    "core_keywords": ["沟通协商", "换位思考", "团队合作"],
+    "time_limit_seconds": 180
+  },
+  {
+    "id": "4f3af2b0-9e8f-48fe-8d05-8f52332f4002",
+    "question_type": "INTERPERSONAL_RELATIONSHIPS",
+    "content": "群众对窗口服务态度提出投诉，投诉对象是你同事，你如何处理？",
+    "core_keywords": ["服务意识", "矛盾化解", "依法依规"],
+    "time_limit_seconds": 180
+  },
+  {
+    "id": "4f3af2b0-9e8f-48fe-8d05-8f52332f4003",
+    "question_type": "INTERPERSONAL_RELATIONSHIPS",
+    "content": "领导临时交办任务与你既有工作冲突，你如何与相关方沟通协调？",
+    "core_keywords": ["服从安排", "优先级管理", "协同推进"],
+    "time_limit_seconds": 180
+  },
+  {
+    "id": "4f3af2b0-9e8f-48fe-8d05-8f52332f5001",
+    "question_type": "SELF_COGNITION",
+    "content": "请谈谈你的报考动机以及你认为自己最适合该岗位的优势。",
+    "core_keywords": ["岗位匹配", "价值认同", "职业规划"],
+    "time_limit_seconds": 180
+  },
+  {
+    "id": "4f3af2b0-9e8f-48fe-8d05-8f52332f5002",
+    "question_type": "SELF_COGNITION",
+    "content": "请描述一次你在压力环境下完成任务的经历，并说明收获。",
+    "core_keywords": ["抗压能力", "复盘能力", "执行力"],
+    "time_limit_seconds": 180
+  },
+  {
+    "id": "4f3af2b0-9e8f-48fe-8d05-8f52332f5003",
+    "question_type": "SELF_COGNITION",
+    "content": "如果你入职后发现现实工作与预期不一致，你会怎么办？",
+    "core_keywords": ["适应能力", "责任意识", "持续学习"],
+    "time_limit_seconds": 180
+  },
+  {
+    "id": "4f3af2b0-9e8f-48fe-8d05-8f52332f6001",
+    "question_type": "SCENARIO_SIMULATION",
+    "content": "请模拟你在接待来访群众时，如何解释政策并安抚情绪。",
+    "core_keywords": ["政策解释", "沟通技巧", "情绪安抚"],
+    "time_limit_seconds": 180
+  },
+  {
+    "id": "4f3af2b0-9e8f-48fe-8d05-8f52332f6002",
+    "question_type": "SCENARIO_SIMULATION",
+    "content": "请模拟你在部门协调会上推进跨部门任务落地的发言。",
+    "core_keywords": ["目标对齐", "任务分解", "协同机制"],
+    "time_limit_seconds": 180
+  },
+  {
+    "id": "4f3af2b0-9e8f-48fe-8d05-8f52332f6003",
+    "question_type": "SCENARIO_SIMULATION",
+    "content": "请模拟你向领导汇报突发事件处置进展的场景。",
+    "core_keywords": ["信息汇报", "风险评估", "后续计划"],
+    "time_limit_seconds": 180
+  }
+]

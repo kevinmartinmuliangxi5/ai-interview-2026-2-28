@@ -3,11 +3,15 @@ from __future__ import annotations
 from contextlib import asynccontextmanager
 import os
 from collections.abc import AsyncIterator
+import json
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from app.middleware.rate_limit import limiter
+from app.routers.evaluations import router as evaluations_router
+from app.routers.questions import router as questions_router
 
 try:  # Optional at import time when slowapi not installed yet.
     from slowapi.errors import RateLimitExceeded
@@ -23,7 +27,16 @@ DEFAULT_MODEL = "gpt-4o-mini"
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.supabase = None
+    app.state.groq = None
+    app.state.openai = None
     app.state.model = os.getenv("OPENAI_MODEL", DEFAULT_MODEL)
+    app.state.evaluations = []
+    app.state.question_cache = {}
+
+    data_dir = Path(__file__).resolve().parent / "data"
+    app.state.questions = json.loads((data_dir / "questions.json").read_text(encoding="utf-8"))
+    app.state.keyword_dict = json.loads((data_dir / "keyword_dict.json").read_text(encoding="utf-8"))
+    app.state.cliche_patterns = json.loads((data_dir / "cliche_patterns.json").read_text(encoding="utf-8"))
 
     supabase_url = os.getenv("SUPABASE_URL")
     supabase_service_role_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
@@ -34,6 +47,24 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             app.state.supabase = await acreate_client(supabase_url, supabase_service_role_key)
         except Exception:
             app.state.supabase = None
+
+    groq_key = os.getenv("GROQ_API_KEY")
+    if groq_key:
+        try:
+            from groq import AsyncGroq
+
+            app.state.groq = AsyncGroq(api_key=groq_key)
+        except Exception:
+            app.state.groq = None
+
+    openai_key = os.getenv("OPENAI_API_KEY")
+    if openai_key:
+        try:
+            from openai import AsyncOpenAI
+
+            app.state.openai = AsyncOpenAI(api_key=openai_key)
+        except Exception:
+            app.state.openai = None
 
     yield
 
@@ -65,3 +96,7 @@ async def health() -> dict[str, str]:
         "version": APP_VERSION,
         "model": getattr(app.state, "model", os.getenv("OPENAI_MODEL", DEFAULT_MODEL)),
     }
+
+
+app.include_router(questions_router)
+app.include_router(evaluations_router)

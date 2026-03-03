@@ -1,4 +1,10 @@
+"use client";
+
+import { useRequireAuth } from "@/lib/auth";
+
 export default function DashboardPage() {
+  useRequireAuth();
+
   return (
     <main className="min-h-screen bg-slate-100 p-8">
       <section className="mx-auto max-w-5xl rounded-2xl bg-white p-8 shadow-sm">

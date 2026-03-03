@@ -1,4 +1,5 @@
 import type { EvaluationResult } from "@/types/evaluation";
+import { AudioTranscriptSync } from "@/components/review/AudioTranscriptSync";
 import { RadarScoreChart } from "@/components/review/RadarScoreChart";
 
 interface ReviewDashboardProps {
@@ -18,6 +19,12 @@ export function ReviewDashboard({ evaluation }: ReviewDashboardProps) {
           <div className="mt-4">
             <RadarScoreChart evaluation={evaluation} />
           </div>
+        </div>
+        <div className="mt-6">
+          <AudioTranscriptSync
+            audioSrc={evaluation.audio_storage_path}
+            segments={evaluation.transcript_segments}
+          />
         </div>
       </section>
     </main>

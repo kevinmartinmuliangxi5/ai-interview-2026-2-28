@@ -32,7 +32,7 @@ export function AudioTranscriptSync({ audioSrc, segments }: AudioTranscriptSyncP
     <section className="rounded-xl border border-slate-200 p-4">
       <h2 className="text-lg font-semibold text-slate-900">音频与转写同步</h2>
       {playableAudioSrc ? (
-        <audio ref={audioRef} controls className="mt-3 w-full" src={playableAudioSrc}>
+        <audio ref={audioRef} controls className="mt-3 w-full max-w-full" src={playableAudioSrc}>
           浏览器暂不支持音频播放。
         </audio>
       ) : (
@@ -55,7 +55,7 @@ export function AudioTranscriptSync({ audioSrc, segments }: AudioTranscriptSyncP
                 activeIndex === index ? "bg-amber-100 text-slate-900" : "text-slate-600"
               }`}
             >
-              <span className="mr-2 text-xs text-slate-400">
+              <span className="mr-2 text-sm text-slate-400">
                 {segment.start.toFixed(1)}s - {segment.end.toFixed(1)}s
               </span>
               {segment.text}

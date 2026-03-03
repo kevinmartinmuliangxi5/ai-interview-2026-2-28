@@ -42,7 +42,7 @@ export default function InterviewMockPage() {
   const flow = useInterviewFlowManager();
   const recorder = useAudioRecorder();
   const [pendingUpload, setPendingUpload] = useState<PendingUpload | null>(null);
-  const [networkError, setNetworkError] = useState(false);
+  const [uploadErrorMessage, setUploadErrorMessage] = useState("");
 
   const currentQuestion = flow.questions[flow.currentQuestionIndex];
   const isLastQuestion = useMemo(
@@ -94,11 +94,14 @@ export default function InterviewMockPage() {
 
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data?.message ?? data?.error_code ?? "submit failed");
+      const detail = data?.detail;
+      const backendMessage =
+        detail?.message ?? detail?.error_code ?? data?.message ?? data?.error_code ?? "提交失败";
+      throw new Error(backendMessage);
     }
 
     setPendingUpload(null);
-    setNetworkError(false);
+    setUploadErrorMessage("");
     router.push(`/review/${data.id}`);
   }
 
@@ -138,8 +141,9 @@ export default function InterviewMockPage() {
 
     try {
       await submitPending(payload);
-    } catch {
-      setNetworkError(true);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "提交失败，请重试。";
+      setUploadErrorMessage(message);
     }
   }
 
@@ -149,8 +153,9 @@ export default function InterviewMockPage() {
     }
     try {
       await submitPending(pendingUpload);
-    } catch {
-      setNetworkError(true);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "提交失败，请重试。";
+      setUploadErrorMessage(message);
     }
   }
 
@@ -167,7 +172,11 @@ export default function InterviewMockPage() {
       <main className="min-h-screen bg-slate-100 p-4">
         <ProcessingSkeleton />
         <div className="mx-auto mt-4 max-w-3xl">
-          <NetworkRetryBanner visible={networkError} onRetry={handleRetryUpload} />
+          <NetworkRetryBanner
+            visible={Boolean(uploadErrorMessage)}
+            message={uploadErrorMessage}
+            onRetry={handleRetryUpload}
+          />
         </div>
       </main>
     );
@@ -191,7 +200,7 @@ export default function InterviewMockPage() {
           <p className="mt-6 text-sm text-slate-500">
             剩余作答时间：{Math.max(0, recordingTimer.secondsLeft)} 秒
           </p>
-          <p className="mt-2 text-xs text-slate-400">录音格式：{recorder.mimeType}</p>
+          <p className="mt-2 text-sm text-slate-400">录音格式：{recorder.mimeType}</p>
           <button
             type="button"
             onClick={() => void handleStopRecording()}

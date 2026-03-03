@@ -16,7 +16,7 @@ export function StructuralCheck({ check }: StructuralCheckProps) {
               <span className="text-sm text-emerald-700/80">暂无</span>
             ) : (
               check.present_elements.map((item) => (
-                <span key={item} className="rounded-full bg-emerald-100 px-2 py-1 text-xs text-emerald-800">
+                <span key={item} className="rounded-full bg-emerald-100 px-2 py-1 text-sm text-emerald-800">
                   {item}
                 </span>
               ))
@@ -30,7 +30,7 @@ export function StructuralCheck({ check }: StructuralCheckProps) {
               <span className="text-sm text-rose-700/80">无</span>
             ) : (
               check.missing_elements.map((item) => (
-                <span key={item} className="rounded-full bg-rose-100 px-2 py-1 text-xs text-rose-800">
+                <span key={item} className="rounded-full bg-rose-100 px-2 py-1 text-sm text-rose-800">
                   {item}
                 </span>
               ))

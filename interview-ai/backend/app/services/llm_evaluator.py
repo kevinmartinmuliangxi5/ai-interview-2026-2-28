@@ -13,6 +13,28 @@ class LLMParseError(Exception):
         super().__init__(message)
 
 
+DEFAULT_LLM_MODEL = "glm-4-flash-250414"
+
+
+def _extract_message_content(message: Any) -> str:
+    content = getattr(message, "content", "")
+    if isinstance(content, str):
+        return content
+
+    if isinstance(content, list):
+        parts: list[str] = []
+        for item in content:
+            if isinstance(item, dict):
+                text = item.get("text") or item.get("content") or ""
+            else:
+                text = getattr(item, "text", "") or getattr(item, "content", "")
+            if text:
+                parts.append(str(text))
+        return "".join(parts)
+
+    return ""
+
+
 async def run_llm_evaluation(
     transcript: str,
     question: dict[str, Any],
@@ -21,7 +43,7 @@ async def run_llm_evaluation(
     openai_client: Any | None = None,
     model: str | None = None,
 ) -> LLMEvaluationOutput:
-    selected_model = model or os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+    selected_model = model or os.getenv("OPENAI_MODEL", DEFAULT_LLM_MODEL)
     system_prompt = build_system_prompt(
         question_type=str(question["question_type"]),
         policy_coverage=policy_coverage,
@@ -31,12 +53,15 @@ async def run_llm_evaluation(
     if openai_client is None:
         from openai import AsyncOpenAI
 
-        openai_client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        openai_client = AsyncOpenAI(
+            api_key=os.getenv("OPENAI_API_KEY"),
+            base_url=os.getenv("OPENAI_BASE_URL"),
+        )
 
     last_error: Exception | None = None
     for attempt in range(3):  # initial + 2 retries
         try:
-            completion = await openai_client.beta.chat.completions.parse(
+            completion = await openai_client.chat.completions.create(
                 model=selected_model,
                 messages=[
                     {"role": "system", "content": system_prompt},
@@ -45,16 +70,21 @@ async def run_llm_evaluation(
                         "content": f"题目：{question['content']}\n\n回答：{transcript}",
                     },
                 ],
-                response_format=LLMEvaluationOutput,
+                response_format={"type": "json_object"},
                 temperature=0.2,
             )
             message = completion.choices[0].message
             if getattr(message, "refusal", None):
                 raise LLMParseError(f"LLM refusal: {message.refusal}")
-            parsed = getattr(message, "parsed", None)
-            if parsed is None:
-                raise LLMParseError("LLM parsed payload is empty.")
-            return parsed
+
+            content = _extract_message_content(message)
+            if not content:
+                raise LLMParseError("LLM JSON content is empty.")
+
+            try:
+                return LLMEvaluationOutput.model_validate_json(content)
+            except Exception as exc:
+                raise LLMParseError(f"LLM JSON parse failed: {exc}") from exc
         except Exception as exc:
             last_error = exc
             if attempt == 2:
@@ -62,4 +92,3 @@ async def run_llm_evaluation(
             await asyncio.sleep(2**attempt)
 
     raise LLMParseError(str(last_error) if last_error else "Unknown LLM parse failure.")
-

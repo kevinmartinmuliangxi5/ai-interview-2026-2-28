@@ -21,3 +21,13 @@ def test_file_too_large_raises_err_file_too_large() -> None:
 def test_valid_payload_passes_basic_checks() -> None:
     payload = b'\x1a\x45\xdf\xa3' + b'0' * 100
     validate_audio(payload, 'audio/webm')
+
+
+def test_content_type_with_codecs_parameter_is_accepted() -> None:
+    payload = b'\x1a\x45\xdf\xa3' + b'0' * 100
+    validate_audio(payload, 'audio/webm;codecs=opus')
+
+
+def test_video_webm_content_type_is_accepted() -> None:
+    payload = b'\x1a\x45\xdf\xa3' + b'0' * 100
+    validate_audio(payload, 'video/webm')

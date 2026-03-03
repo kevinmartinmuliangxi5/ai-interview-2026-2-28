@@ -21,7 +21,7 @@ except ImportError:  # pragma: no cover
     SlowAPIMiddleware = None  # type: ignore[assignment]
 
 APP_VERSION = "1.0.0"
-DEFAULT_MODEL = "gpt-4o-mini"
+DEFAULT_MODEL = "glm-4-flash-250414"
 
 
 @asynccontextmanager
@@ -62,7 +62,10 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         try:
             from openai import AsyncOpenAI
 
-            app.state.openai = AsyncOpenAI(api_key=openai_key)
+            app.state.openai = AsyncOpenAI(
+                api_key=openai_key,
+                base_url=os.getenv("OPENAI_BASE_URL"),
+            )
         except Exception:
             app.state.openai = None
 

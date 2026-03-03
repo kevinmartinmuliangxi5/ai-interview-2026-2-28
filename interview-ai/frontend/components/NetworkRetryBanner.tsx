@@ -2,17 +2,18 @@
 
 interface NetworkRetryBannerProps {
   visible: boolean;
+  message?: string;
   onRetry: () => void;
 }
 
-export function NetworkRetryBanner({ visible, onRetry }: NetworkRetryBannerProps) {
+export function NetworkRetryBanner({ visible, message, onRetry }: NetworkRetryBannerProps) {
   if (!visible) {
     return null;
   }
 
   return (
     <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-amber-800">
-      <p className="text-sm">网络异常，请保持页面勿刷新。</p>
+      <p className="text-sm">{message || "网络异常，请保持页面勿刷新。"}</p>
       <button
         type="button"
         onClick={onRetry}

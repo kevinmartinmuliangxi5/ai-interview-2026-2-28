@@ -21,6 +21,18 @@ def _mock_groq_response() -> MagicMock:
     return response
 
 
+def _mock_groq_response_without_words() -> MagicMock:
+    response = MagicMock()
+    response.text = ''
+    segment = MagicMock()
+    segment.text = '各位考官，关于这个问题'
+    segment.start = 0.0
+    segment.end = 5.2
+    response.segments = [segment]
+    response.duration = 5.2
+    return response
+
+
 @pytest.mark.asyncio
 async def test_run_asr_success_returns_segments() -> None:
     groq_client = MagicMock()
@@ -35,6 +47,22 @@ async def test_run_asr_success_returns_segments() -> None:
 
     assert result['transcript'] == '各位考官，关于这个问题'
     assert result['transcript_segments'][0] == {'text': '各位考官', 'start': 0.0, 'end': 0.8}
+
+
+@pytest.mark.asyncio
+async def test_run_asr_handles_responses_without_words_field() -> None:
+    groq_client = MagicMock()
+    groq_client.audio.transcriptions.create = AsyncMock(return_value=_mock_groq_response_without_words())
+
+    result = await run_asr(
+        audio_wav_bytes=b'fake-wav',
+        question_type='COMPREHENSIVE_ANALYSIS',
+        groq_client=groq_client,
+        keyword_dict={'COMPREHENSIVE_ANALYSIS': ['接诉即办']},
+    )
+
+    assert result['transcript'] == '各位考官，关于这个问题'
+    assert result['transcript_segments'][0] == {'text': '各位考官，关于这个问题', 'start': 0.0, 'end': 5.2}
 
 
 @pytest.mark.asyncio

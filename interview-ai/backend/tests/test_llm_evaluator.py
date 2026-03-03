@@ -6,8 +6,7 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 
 from app.models.evaluation import DimensionScore, LLMEvaluationOutput, StructuralCheck
-from app.services.llm_evaluator import LLMParseError, run_llm_evaluation
-
+from app.services.llm_evaluator import DEFAULT_LLM_MODEL, LLMParseError, run_llm_evaluation
 
 
 def _valid_parsed_output() -> LLMEvaluationOutput:
@@ -29,8 +28,8 @@ def _valid_parsed_output() -> LLMEvaluationOutput:
     )
 
 
-def _mock_completion(parsed: LLMEvaluationOutput | None, refusal: str | None = None) -> SimpleNamespace:
-    message = SimpleNamespace(parsed=parsed, refusal=refusal)
+def _mock_completion(content: str, refusal: str | None = None) -> SimpleNamespace:
+    message = SimpleNamespace(content=content, refusal=refusal)
     choice = SimpleNamespace(message=message)
     return SimpleNamespace(choices=[choice])
 
@@ -38,7 +37,9 @@ def _mock_completion(parsed: LLMEvaluationOutput | None, refusal: str | None = N
 @pytest.mark.asyncio
 async def test_llm_evaluation_success() -> None:
     openai_client = MagicMock()
-    openai_client.beta.chat.completions.parse = AsyncMock(return_value=_mock_completion(_valid_parsed_output()))
+    openai_client.chat.completions.create = AsyncMock(
+        return_value=_mock_completion(_valid_parsed_output().model_dump_json())
+    )
 
     result = await run_llm_evaluation(
         transcript='回答内容',
@@ -56,7 +57,9 @@ async def test_llm_model_fallback_to_default(monkeypatch: pytest.MonkeyPatch) ->
     monkeypatch.delenv('OPENAI_MODEL', raising=False)
 
     openai_client = MagicMock()
-    openai_client.beta.chat.completions.parse = AsyncMock(return_value=_mock_completion(_valid_parsed_output()))
+    openai_client.chat.completions.create = AsyncMock(
+        return_value=_mock_completion(_valid_parsed_output().model_dump_json())
+    )
 
     await run_llm_evaluation(
         transcript='回答内容',
@@ -66,14 +69,15 @@ async def test_llm_model_fallback_to_default(monkeypatch: pytest.MonkeyPatch) ->
         openai_client=openai_client,
     )
 
-    kwargs = openai_client.beta.chat.completions.parse.await_args.kwargs
-    assert kwargs['model'] == 'gpt-4o-mini'
+    kwargs = openai_client.chat.completions.create.await_args.kwargs
+    assert kwargs['model'] == DEFAULT_LLM_MODEL
+    assert kwargs['response_format'] == {'type': 'json_object'}
 
 
 @pytest.mark.asyncio
 async def test_llm_parse_failure_after_retries() -> None:
     openai_client = MagicMock()
-    openai_client.beta.chat.completions.parse = AsyncMock(
+    openai_client.chat.completions.create = AsyncMock(
         side_effect=[ValueError('invalid'), ValueError('invalid'), ValueError('invalid')]
     )
 

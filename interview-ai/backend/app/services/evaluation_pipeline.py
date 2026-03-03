@@ -79,13 +79,16 @@ async def _run_llm_or_fallback(
     openai_client = getattr(request.app.state, "openai", None)
     if openai_client is None:
         return _default_llm_output()
-    return await run_llm_evaluation(
-        transcript=transcript,
-        question=question,
-        policy_coverage=policy_coverage,
-        cliche_count=cliche_count,
-        openai_client=openai_client,
-    )
+    try:
+        return await run_llm_evaluation(
+            transcript=transcript,
+            question=question,
+            policy_coverage=policy_coverage,
+            cliche_count=cliche_count,
+            openai_client=openai_client,
+        )
+    except LLMParseError:
+        return _default_llm_output()
 
 
 def _build_response_payload(
@@ -259,4 +262,3 @@ async def run_evaluation_pipeline(
     # 10. persist
     stored = await _persist_record(request=request, payload=payload, client_request_id=client_request_id)
     return stored
-

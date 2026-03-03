@@ -49,3 +49,32 @@ def test_submit_route_returns_201_with_mocked_pipeline(monkeypatch) -> None:
 
         assert response.status_code == 201
         assert response.json()['id'] == 'ev-1'
+
+
+def test_get_evaluation_by_id_returns_record_for_owner() -> None:
+    app.dependency_overrides[get_current_user] = _override_user
+
+    with TestClient(app) as client:
+        app.state.evaluations = [
+            {
+                "id": "ev-1",
+                "user_id": "user-1",
+                "final_score": 86.5,
+            }
+        ]
+        response = client.get("/api/v1/evaluations/ev-1", headers={"Authorization": "Bearer token"})
+
+    assert response.status_code == 200
+    assert response.json()["id"] == "ev-1"
+    assert response.json()["user_id"] == "user-1"
+
+
+def test_get_evaluation_by_id_returns_404_when_missing() -> None:
+    app.dependency_overrides[get_current_user] = _override_user
+
+    with TestClient(app) as client:
+        app.state.evaluations = []
+        response = client.get("/api/v1/evaluations/not-found", headers={"Authorization": "Bearer token"})
+
+    assert response.status_code == 404
+    assert response.json()["detail"]["error_code"] == "ERR_NOT_FOUND"

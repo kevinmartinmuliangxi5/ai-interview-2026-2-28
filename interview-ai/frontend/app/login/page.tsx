@@ -44,6 +44,7 @@ export default function LoginPage() {
       }
 
       window.sessionStorage.setItem("access_token", data.session.access_token);
+      document.cookie = `access-token=${encodeURIComponent(data.session.access_token)}; path=/; SameSite=Lax; Max-Age=3600`;
       document.cookie = "auth-present=1; path=/; SameSite=Lax; Max-Age=3600";
       router.push("/dashboard");
     } catch {

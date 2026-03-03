@@ -16,6 +16,7 @@ export function useRequireAuth() {
     const token = window.sessionStorage.getItem("access_token");
     if (!token) {
       document.cookie = "auth-present=; path=/; Max-Age=0";
+      document.cookie = "access-token=; path=/; Max-Age=0";
       router.replace("/login");
       return;
     }
@@ -25,6 +26,7 @@ export function useRequireAuth() {
       if (error || !data.user) {
         window.sessionStorage.clear();
         document.cookie = "auth-present=; path=/; Max-Age=0";
+        document.cookie = "access-token=; path=/; Max-Age=0";
         router.replace("/login");
       }
     });

@@ -39,9 +39,14 @@ export function useInterviewFlowManager() {
     setQuestions(examQuestions);
   }
 
-  function startRecording(stream: MediaStream) {
+  function startRecording(stream?: MediaStream) {
     const snapshot = useInterviewStore.getState();
     if (snapshot.state !== "READING") {
+      return;
+    }
+
+    if (!stream) {
+      setState("RECORDING");
       return;
     }
 
@@ -78,6 +83,11 @@ export function useInterviewFlowManager() {
     });
   }
 
+  function setBlobForCurrentQuestion(blob: Blob) {
+    const snapshot = useInterviewStore.getState();
+    audioBlobsRef.current.set(snapshot.currentQuestionIndex, blob);
+  }
+
   function nextQuestion() {
     const snapshot = useInterviewStore.getState();
     const isLastQuestion = snapshot.currentQuestionIndex >= snapshot.questions.length - 1;
@@ -107,6 +117,7 @@ export function useInterviewFlowManager() {
     startExam,
     startRecording,
     stopCurrentRecording,
+    setBlobForCurrentQuestion,
     nextQuestion,
     submitAll,
     audioBlobsRef,

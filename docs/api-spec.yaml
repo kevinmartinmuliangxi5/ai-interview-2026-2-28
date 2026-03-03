@@ -1,0 +1,1131 @@
+openapi: 3.0.3
+
+info:
+  title: AI面试训练系统 API
+  description: |
+    公务员结构化面试 AI 辅助训练系统 — FastAPI 后端接口文档
+
+    **系统边界（PRD §6.1）**
+    - 所有 ASR + LLM + 评分计算仅在 FastAPI 层执行
+    - Next.js Route Handler 作代理转发，不直接接触 AI API
+    - Supabase Auth 登录/注销由前端直接调用 Supabase SDK，不经过本 API
+
+    **认证方式**：每个受保护端点须在请求头携带 Supabase JWT：
+    ```
+    Authorization: Bearer <access_token>
+    ```
+    令牌通过 `supabase.auth.signInWithPassword()` 获取，有效期 3600 秒（HS256 算法）。
+    FastAPI 后端调用 `supabase-py auth.get_user(token)` 验证令牌合法性。
+
+    **速率限制**：`POST /api/v1/evaluations/submit` 每用户每分钟最多 3 次，超出返回 HTTP 429。
+
+    **端到端性能目标**：提交录音 → 收到完整报告 ≤ 15 秒（PRD §5.1 发版阻断指标）。
+  version: 1.0.0
+  contact:
+    name: PRD Reference
+    url: https://github.com/yourorg/interview-ai
+
+servers:
+  - url: http://localhost:8000
+    description: 本地开发（Docker Compose）
+  - url: https://api.your-railway-app.railway.app
+    description: 生产环境（Railway）
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: health
+    description: 服务健康检查
+  - name: questions
+    description: 题库管理与随机抽题
+  - name: evaluations
+    description: 录音评估提交与历史查询
+
+# ==============================================================
+# 组件定义（Schemas + SecuritySchemes + Responses）
+# ==============================================================
+components:
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Supabase Auth JWT 令牌（HS256，有效期 3600s）。
+        通过 `supabase.auth.signInWithPassword()` 获取后存入 `sessionStorage`（**禁止 localStorage**，防 XSS 持久化）。
+        令牌过期时 FastAPI 返回 HTTP 401，前端须重定向至 `/login`。
+
+  schemas:
+
+    # ----------------------------------------------------------
+    # 基础枚举类型
+    # ----------------------------------------------------------
+    QuestionType:
+      type: string
+      description: 题型枚举（全文统一，PRD §0.1，禁止使用其他写法）
+      enum:
+        - COMPREHENSIVE_ANALYSIS      # 综合分析题
+        - PLANNING_ORGANIZATION       # 计划组织协调题
+        - EMERGENCY_RESPONSE          # 应急应变题
+        - INTERPERSONAL_RELATIONSHIPS # 人际关系交往题
+        - SELF_COGNITION              # 自我认知题
+        - SCENARIO_SIMULATION         # 情景模拟题
+      example: COMPREHENSIVE_ANALYSIS
+
+    RuleViolation:
+      type: string
+      description: |
+        规则红线枚举（LLM 标注 + 确定性检测双保险），`apply_rule_caps()` 的输入源（PRD §7.1）。
+
+        | 值 | 硬钳制效果 |
+        |---|---|
+        | CLICHE_ANALYSIS | analysis_ability_score ≤ 59 |
+        | NO_SAFETY_PLAN | organization_coordination_score ≤ 65 |
+        | EMERGENCY_HARDLINE | emergency_response_score ≤ 40 |
+        | INTERPERSONAL_CONFLICT | interpersonal_communication_score ≤ 40 |
+      enum:
+        - CLICHE_ANALYSIS
+        - NO_SAFETY_PLAN
+        - EMERGENCY_HARDLINE
+        - INTERPERSONAL_CONFLICT
+      example: NO_SAFETY_PLAN
+
+    # ----------------------------------------------------------
+    # 子结构
+    # ----------------------------------------------------------
+    TranscriptSegment:
+      type: object
+      description: Whisper 词级时间戳单条记录，用于前端音频高亮同步（±0.5s 容差，PRD §4.5）
+      required:
+        - text
+        - start
+        - end
+      properties:
+        text:
+          type: string
+          description: 该时间段内的转写文本片段
+          example: "各位考官"
+        start:
+          type: number
+          format: float
+          description: 片段起始时间（秒）
+          example: 0.0
+        end:
+          type: number
+          format: float
+          description: 片段结束时间（秒）
+          example: 0.8
+      example:
+        text: "各位考官"
+        start: 0.0
+        end: 0.8
+
+    DimensionScore:
+      type: object
+      description: 单维度 LLM 评分（PRD §0.2）。LLM 仅输出 score + reasoning，不输出 weight 或 final_score。
+      required:
+        - score
+        - reasoning
+      properties:
+        score:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          description: 百分制得分（0–100）
+          example: 82.0
+        reasoning:
+          type: string
+          description: 针对性扣分依据与评语
+          example: "考生开篇干脆抛出官方视角，多维度分析根源到位，但结尾未牵引至宏观战略，扣分 8 分。"
+
+    StructuralFrameworkCheck:
+      type: object
+      description: 答题框架完整性检查（LLM 生成，PRD §0.2）
+      required:
+        - is_complete
+        - missing_elements
+        - present_elements
+      properties:
+        is_complete:
+          type: boolean
+          description: 框架是否完整
+          example: false
+        missing_elements:
+          type: array
+          description: 缺失的框架要素（前端以警告色高亮展示）
+          items:
+            type: string
+          example:
+            - "长效机制"
+        present_elements:
+          type: array
+          description: 已包含的框架要素（前端以正常色展示）
+          items:
+            type: string
+          example:
+            - "表明态度"
+            - "分析原因"
+            - "提出对策"
+
+    # ----------------------------------------------------------
+    # 题目
+    # ----------------------------------------------------------
+    Question:
+      type: object
+      description: 题库题目（PRD §0.1）
+      required:
+        - id
+        - question_type
+        - content
+        - core_keywords
+        - time_limit_seconds
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: 题目唯一标识
+          example: "c7d8e9f0-1234-5678-9abc-def012345678"
+        question_type:
+          $ref: '#/components/schemas/QuestionType'
+        content:
+          type: string
+          description: 题目全文
+          example: "当前'接诉即办'工作中，部分基层单位存在'重接诉、轻办诉'的问题，请谈谈你对此的看法。"
+        core_keywords:
+          type: array
+          description: 该题必选政策词汇，供 Aho-Corasick 计算 required_count 使用
+          items:
+            type: string
+          example:
+            - "接诉即办"
+            - "法治中国建设"
+            - "为民服务"
+        time_limit_seconds:
+          type: integer
+          minimum: 30
+          maximum: 600
+          description: 默认作答时限（秒），前端倒计时基准
+          example: 180
+        created_at:
+          type: string
+          format: date-time
+          description: 题目录入时间
+          example: "2026-01-15T08:00:00Z"
+
+    # ----------------------------------------------------------
+    # 评估结果（完整版，用于 REVIEW 复盘看板）
+    # ----------------------------------------------------------
+    EvaluationResult:
+      type: object
+      description: |
+        完整评估记录（PRD §0.4）。
+
+        字段来源分类：
+        - **LLM 生成**：6 个维度 score/reasoning、structural_framework_check、improvement_suggestions、model_ideal_answer、rule_violations
+        - **规则计算（非 LLM）**：paralinguistic_fluency_score、pause_count、speech_rate_cpm、filler_density_per_min、anti_template_warning
+        - **后端聚合**：final_score（加权公式 PRD §0.3）
+        - **音频管道**：transcript、transcript_segments、audio_duration_seconds
+      required:
+        - id
+        - user_id
+        - question_id
+        - transcript
+        - transcript_segments
+        - audio_duration_seconds
+        - analysis_ability_score
+        - analysis_ability_reasoning
+        - organization_coordination_score
+        - organization_coordination_reasoning
+        - emergency_response_score
+        - emergency_response_reasoning
+        - interpersonal_communication_score
+        - interpersonal_communication_reasoning
+        - language_expression_score
+        - language_expression_reasoning
+        - job_matching_score
+        - job_matching_reasoning
+        - paralinguistic_fluency_score
+        - structural_framework_check
+        - improvement_suggestions
+        - model_ideal_answer
+        - rule_violations
+        - final_score
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+        user_id:
+          type: string
+          format: uuid
+          example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        question_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: 题目 ID；题目被删除后为 null（ON DELETE SET NULL）
+          example: "c7d8e9f0-1234-5678-9abc-def012345678"
+
+        # 音频管道
+        transcript:
+          type: string
+          description: Whisper 全文转写文本
+          example: "各位考官，关于接诉即办工作中重接诉轻办诉的问题，我的看法如下..."
+        transcript_segments:
+          type: array
+          description: Whisper 词级时间戳数组，用于前端文本高亮同步
+          items:
+            $ref: '#/components/schemas/TranscriptSegment'
+        audio_duration_seconds:
+          type: number
+          format: float
+          description: 录音时长（秒）
+          example: 173.5
+        audio_storage_path:
+          type: string
+          nullable: true
+          description: Supabase Storage 路径（TTL 24h 后自动删除，届时值仍保留但文件不可访问）
+          example: "interview-audio/a1b2c3d4/2026-02-28/f47ac10b.webm"
+
+        # 维度 1：综合分析（LLM，20% 权重）
+        analysis_ability_score:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          example: 82.0
+        analysis_ability_reasoning:
+          type: string
+          example: "开篇干脆抛出官方视角，多维度透视根源到位，但结尾未牵引至宏观战略，扣 8 分。"
+
+        # 维度 2：计划组织（LLM，15% 权重）
+        organization_coordination_score:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          example: 75.0
+        organization_coordination_reasoning:
+          type: string
+          example: "五步法基本覆盖，但缺少安全预案与经费预算的明确描述，触发 NO_SAFETY_PLAN 钳制至 65 分。"
+
+        # 维度 3：应急应变（LLM，15% 权重）
+        emergency_response_score:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          example: 78.0
+        emergency_response_reasoning:
+          type: string
+          example: "六字诀时序完整，联动部门资源调动清晰，处置方案具体可操作。"
+
+        # 维度 4：人际交往（LLM，15% 权重）
+        interpersonal_communication_score:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          example: 80.0
+        interpersonal_communication_reasoning:
+          type: string
+          example: "体现了尊重服从原则，委婉沟通方式得当，未出现顶撞或越级上访表述。"
+
+        # 维度 5：言语表达（LLM，15% 权重）
+        language_expression_score:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          example: 77.0
+        language_expression_reasoning:
+          type: string
+          example: "逻辑层次清晰，但语气词偏多（'然后就是'出现 4 次），口语化表达较重。"
+
+        # 维度 6：求职动机（LLM，10% 权重）
+        job_matching_score:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          example: 85.0
+        job_matching_reasoning:
+          type: string
+          example: "结合岗位特点阐述从政初心，政策认同度高，符合党群机关岗位要求。"
+
+        # 维度 7：副语言流畅度（规则计算，非 LLM，10% 权重）
+        paralinguistic_fluency_score:
+          type: number
+          format: float
+          minimum: 50
+          maximum: 100
+          description: |
+            `calculate_fluency_score()` 输出，保底 50 分（PRD §7.1）。
+            基础分 80，扣分项：停顿≥3s（-2/次，上限-10）、语速越界（-5）、语气词密度>5次/分钟（-3）。
+          example: 74.0
+
+        # P1：副语言原始指标（供趋势分析，PRD §2.2）
+        pause_count:
+          type: integer
+          nullable: true
+          minimum: 0
+          description: 停顿次数（≥ 3.0s gap，P1 功能启用时写入）
+          example: 3
+        speech_rate_cpm:
+          type: number
+          format: float
+          nullable: true
+          minimum: 0
+          description: 语速（字/分钟，P1 功能启用时写入）
+          example: 187.5
+        filler_density_per_min:
+          type: number
+          format: float
+          nullable: true
+          minimum: 0
+          description: 语气词密度（次/分钟，P1 功能启用时写入）
+          example: 2.1
+
+        # 结构化分析（LLM 生成）
+        structural_framework_check:
+          $ref: '#/components/schemas/StructuralFrameworkCheck'
+        improvement_suggestions:
+          type: array
+          description: LLM 生成的改进建议列表
+          items:
+            type: string
+          example:
+            - "建议结尾结合乡村振兴政策进行拔高，体现宏观战略视野。"
+            - "答题中段可引入'穿透式调研'等政策术语，增强专业性。"
+        model_ideal_answer:
+          type: string
+          description: LLM 生成的官方话语体系高分示范答案（前端左右双栏对照展示）
+          example: "各位考官，关于'接诉即办'工作中重接诉轻办诉的问题，我认为这一现象的根源在于..."
+
+        # 规则红线
+        rule_violations:
+          type: array
+          description: |
+            LLM 标注的规则红线列表（经 `filter_unknown_violations` 过滤，仅含合法枚举值）。
+            `apply_rule_caps()` 读取此字段执行分数硬钳制（双保险：LLM 标注 OR 确定性检测任一命中即触发）。
+          items:
+            $ref: '#/components/schemas/RuleViolation'
+          example: []
+
+        # P1：反模板化警告
+        anti_template_warning:
+          type: string
+          nullable: true
+          description: |
+            P1 正则黑名单检测结果。
+            - `null`：未触发（命中条目 < 3，或 P1 功能未启用）
+            - 非 null：命中 ≥ 3 条时的警告文案（前端据此渲染警告横幅）
+          example: null
+
+        # 聚合分数
+        final_score:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          description: |
+            加权总分（PRD §0.3，后端硬编码，禁止 LLM 生成）。
+            公式：analysis×0.20 + org×0.15 + emr×0.15 + inter×0.15 + lang×0.15 + job×0.10 + fluency×0.10
+          example: 79.35
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-02-28T10:00:00Z"
+
+    # ----------------------------------------------------------
+    # 评估摘要（列表视图，省略大文本字段）
+    # ----------------------------------------------------------
+    EvaluationSummary:
+      type: object
+      description: 评估历史列表中的摘要视图（省略 transcript、reasoning、model_ideal_answer 等重型文本）
+      required:
+        - id
+        - question_id
+        - final_score
+        - audio_duration_seconds
+        - rule_violations
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+        question_id:
+          type: string
+          format: uuid
+          nullable: true
+          example: "c7d8e9f0-1234-5678-9abc-def012345678"
+        question_type:
+          $ref: '#/components/schemas/QuestionType'
+        analysis_ability_score:
+          type: number
+          format: float
+          example: 82.0
+        organization_coordination_score:
+          type: number
+          format: float
+          example: 75.0
+        emergency_response_score:
+          type: number
+          format: float
+          example: 78.0
+        interpersonal_communication_score:
+          type: number
+          format: float
+          example: 80.0
+        language_expression_score:
+          type: number
+          format: float
+          example: 77.0
+        job_matching_score:
+          type: number
+          format: float
+          example: 85.0
+        paralinguistic_fluency_score:
+          type: number
+          format: float
+          example: 74.0
+        final_score:
+          type: number
+          format: float
+          example: 79.35
+        audio_duration_seconds:
+          type: number
+          format: float
+          example: 173.5
+        rule_violations:
+          type: array
+          items:
+            $ref: '#/components/schemas/RuleViolation'
+          example: []
+        anti_template_warning:
+          type: string
+          nullable: true
+          example: null
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-02-28T10:00:00Z"
+
+    # ----------------------------------------------------------
+    # 分页封装
+    # ----------------------------------------------------------
+    PaginatedEvaluations:
+      type: object
+      required:
+        - data
+        - total
+        - page
+        - page_size
+        - has_more
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvaluationSummary'
+        total:
+          type: integer
+          description: 当前用户的评估总数
+          example: 42
+        page:
+          type: integer
+          minimum: 1
+          example: 1
+        page_size:
+          type: integer
+          minimum: 1
+          maximum: 50
+          example: 20
+        has_more:
+          type: boolean
+          description: 是否还有下一页
+          example: true
+
+    # ----------------------------------------------------------
+    # 错误响应
+    # ----------------------------------------------------------
+    ErrorResponse:
+      type: object
+      description: 标准错误响应体
+      required:
+        - error_code
+      properties:
+        error_code:
+          type: string
+          description: 机器可读的错误标识符
+          example: "ERR_INVALID_AUDIO"
+        message:
+          type: string
+          description: 人类可读的错误描述（中文，可直接展示给用户）
+          example: "音频格式不支持，请上传 audio/webm 或 audio/mp4 格式文件。"
+        detail:
+          type: object
+          description: 调试用附加信息（仅开发环境返回）
+          additionalProperties: true
+
+  # ----------------------------------------------------------
+  # 复用 Response 定义
+  # ----------------------------------------------------------
+  responses:
+    Unauthorized:
+      description: |
+        **401 Unauthorized**
+
+        JWT 令牌缺失、格式错误或已过期（3600s 有效期）。
+        前端应清除 sessionStorage 并重定向至 `/login`。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error_code: "ERR_UNAUTHORIZED"
+            message: "令牌已过期，请重新登录。"
+
+    Forbidden:
+      description: |
+        **403 Forbidden**
+
+        令牌有效，但无权访问该资源（资源属于其他用户）。
+        注意：Supabase RLS 通常将越权访问表现为 404 而非 403，此状态码由应用层额外校验产生。
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error_code: "ERR_FORBIDDEN"
+            message: "您无权访问该评估记录。"
+
+    NotFound:
+      description: "**404 Not Found** — 资源不存在"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error_code: "ERR_NOT_FOUND"
+            message: "评估记录不存在。"
+
+    InternalServerError:
+      description: "**500 Internal Server Error** — 服务端未预期错误"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error_code: "ERR_INTERNAL"
+            message: "服务端发生未知错误，请联系管理员。"
+
+
+# ==============================================================
+# 路由定义
+# ==============================================================
+paths:
+
+  # ------------------------------------------------------------
+  # 健康检查
+  # ------------------------------------------------------------
+  /api/v1/health:
+    get:
+      tags:
+        - health
+      summary: 服务健康检查
+      description: 返回服务运行状态，无需认证。用于 Docker/Railway 健康检测探针。
+      operationId: healthCheck
+      security: []
+      responses:
+        '200':
+          description: 服务正常运行
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - version
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  version:
+                    type: string
+                    description: API 版本号
+                    example: "1.0.0"
+                  model:
+                    type: string
+                    description: 当前配置的 LLM 模型（来自 OPENAI_MODEL 环境变量）
+                    example: "gpt-4o-mini"
+              example:
+                status: "ok"
+                version: "1.0.0"
+                model: "gpt-4o-mini"
+
+  # ------------------------------------------------------------
+  # 题库
+  # ------------------------------------------------------------
+  /api/v1/questions/draw:
+    get:
+      tags:
+        - questions
+      summary: 随机抽取考题
+      description: |
+        从 6 大题型中随机抽取指定数量的题目，生成模拟考试试卷。
+
+        每次调用结果不幂等（每次抽取结果随机）。
+        题目数据来自数据库 `questions` 表（静态只读，PRD §2.1）。
+      operationId: drawQuestions
+      parameters:
+        - name: count
+          in: query
+          required: false
+          description: 抽题数量（3–5 题）
+          schema:
+            type: integer
+            minimum: 3
+            maximum: 5
+            default: 3
+          example: 4
+      responses:
+        '200':
+          description: 抽题成功
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - questions
+                properties:
+                  questions:
+                    type: array
+                    minItems: 3
+                    maxItems: 5
+                    items:
+                      $ref: '#/components/schemas/Question'
+              example:
+                questions:
+                  - id: "c7d8e9f0-1234-5678-9abc-def012345678"
+                    question_type: "COMPREHENSIVE_ANALYSIS"
+                    content: "当前'接诉即办'工作中，部分基层单位存在'重接诉、轻办诉'的问题，请谈谈你对此的看法。"
+                    core_keywords:
+                      - "接诉即办"
+                      - "法治中国建设"
+                    time_limit_seconds: 180
+                    created_at: "2026-01-15T08:00:00Z"
+                  - id: "d8e9f0a1-2345-6789-abcd-ef0123456789"
+                    question_type: "PLANNING_ORGANIZATION"
+                    content: "单位要举办一次面向200名群众的法治宣传活动，请你谈谈如何组织实施。"
+                    core_keywords:
+                      - "安全预案"
+                      - "经费预算"
+                    time_limit_seconds: 180
+                    created_at: "2026-01-15T08:05:00Z"
+        '400':
+          description: |
+            **400 Bad Request** — 请求参数非法（count 超出 3–5 范围）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_code: "ERR_VALIDATION"
+                message: "count 参数须在 3–5 范围内。"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/questions/{question_id}:
+    get:
+      tags:
+        - questions
+      summary: 获取单道题目详情
+      description: 根据 UUID 获取题库中单道题目的完整信息。
+      operationId: getQuestion
+      parameters:
+        - name: question_id
+          in: path
+          required: true
+          description: 题目 UUID
+          schema:
+            type: string
+            format: uuid
+          example: "c7d8e9f0-1234-5678-9abc-def012345678"
+      responses:
+        '200':
+          description: 题目详情
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+              example:
+                id: "c7d8e9f0-1234-5678-9abc-def012345678"
+                question_type: "COMPREHENSIVE_ANALYSIS"
+                content: "当前'接诉即办'工作中，部分基层单位存在'重接诉、轻办诉'的问题，请谈谈你对此的看法。"
+                core_keywords:
+                  - "接诉即办"
+                  - "法治中国建设"
+                time_limit_seconds: 180
+                created_at: "2026-01-15T08:00:00Z"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ------------------------------------------------------------
+  # 评估提交（核心端点）
+  # ------------------------------------------------------------
+  /api/v1/evaluations/submit:
+    post:
+      tags:
+        - evaluations
+      summary: 提交录音并获取 AI 评估报告
+      description: |
+        **核心 AI 管道端点**（PRD §2.1、§4.2、§4.3）。
+
+        完整处理流程：
+        1. 安全验证（Content-Type + 文件大小 + 魔数）
+        2. ffmpeg 无条件转码 → wav 16kHz mono
+        3. Groq whisper-large-v3 ASR（word_timestamps=True）
+        4. Aho-Corasick 政策词汇 + 套话黑名单分析
+        5. P1 正则黑名单反模板化检测
+        6. Prompt 工厂按 question_type 路由 → LLM 结构化评估
+        7. `apply_rule_caps()` 双保险硬钳制
+        8. `calculate_fluency_score()` 副语言计算
+        9. `final_score` 加权聚合
+        10. 写入 Supabase DB + Storage，返回完整报告
+
+        **端到端目标 ≤ 15 秒**（发版阻断指标，PRD §5.1）。
+
+        **速率限制**：每用户每分钟最多 3 次，超出返回 HTTP 429。
+
+        **音频约束**：
+        - 支持格式：`audio/webm`（Chrome）、`audio/mp4`（Safari）
+        - 大小上限：10MB
+        - 后端统一转码，前端**无需**转换为 16kHz
+      operationId: submitEvaluation
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - audio
+                - question_id
+              properties:
+                audio:
+                  type: string
+                  format: binary
+                  description: |
+                    录音文件二进制内容。
+                    - 支持 `audio/webm`（Chrome MediaRecorder 默认输出）
+                    - 支持 `audio/mp4`（Safari MediaRecorder 默认输出）
+                    - 大小 ≤ 10MB（约 3 分钟录音约 2MB）
+                    - 后端用 python-magic 验证文件头魔数，防 Content-Type 伪造
+                question_id:
+                  type: string
+                  format: uuid
+                  description: 本次作答对应的题目 UUID（须为 questions 表中已存在的记录）
+                  example: "c7d8e9f0-1234-5678-9abc-def012345678"
+            encoding:
+              audio:
+                contentType: audio/webm, audio/mp4
+      responses:
+        '201':
+          description: |
+            **201 Created** — 评估完成，返回完整报告。
+
+            记录已写入 `evaluations` 表，音频已上传至 Supabase Storage（TTL 24h）。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvaluationResult'
+              example:
+                id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                user_id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                question_id: "c7d8e9f0-1234-5678-9abc-def012345678"
+                transcript: "各位考官，关于接诉即办工作中重接诉轻办诉的问题，我认为这一现象的根源在于..."
+                transcript_segments:
+                  - text: "各位考官"
+                    start: 0.0
+                    end: 0.8
+                  - text: "关于接诉即办工作"
+                    start: 0.9
+                    end: 2.1
+                audio_duration_seconds: 173.5
+                audio_storage_path: "interview-audio/a1b2c3d4/2026-02-28/f47ac10b.webm"
+                analysis_ability_score: 82.0
+                analysis_ability_reasoning: "开篇干脆抛出官方视角，多维度透视根源到位，但结尾未牵引至宏观战略，扣 8 分。"
+                organization_coordination_score: 65.0
+                organization_coordination_reasoning: "五步法基本覆盖，但缺少安全预案与经费预算描述，已触发 NO_SAFETY_PLAN 硬钳制至 65 分。"
+                emergency_response_score: 78.0
+                emergency_response_reasoning: "六字诀时序完整，联动部门资源调动清晰。"
+                interpersonal_communication_score: 80.0
+                interpersonal_communication_reasoning: "体现了尊重服从原则，委婉沟通方式得当。"
+                language_expression_score: 77.0
+                language_expression_reasoning: "逻辑层次清晰，但语气词偏多，口语化表达较重。"
+                job_matching_score: 85.0
+                job_matching_reasoning: "结合岗位特点阐述从政初心，政策认同度高。"
+                paralinguistic_fluency_score: 74.0
+                pause_count: 3
+                speech_rate_cpm: 187.5
+                filler_density_per_min: 2.1
+                structural_framework_check:
+                  is_complete: false
+                  missing_elements:
+                    - "长效机制"
+                  present_elements:
+                    - "表明态度"
+                    - "分析原因"
+                    - "提出对策"
+                improvement_suggestions:
+                  - "建议结尾结合乡村振兴政策进行拔高，体现宏观战略视野。"
+                  - "可引入'穿透式调研'等政策术语增强专业性。"
+                model_ideal_answer: "各位考官，关于'接诉即办'工作中重接诉轻办诉的问题，我认为这一现象的根源在于..."
+                rule_violations:
+                  - "NO_SAFETY_PLAN"
+                anti_template_warning: null
+                final_score: 79.35
+                created_at: "2026-02-28T10:00:00Z"
+        '400':
+          description: |
+            **400 Bad Request** — 请求参数非法。
+
+            可能的 error_code：
+            - `ERR_INVALID_AUDIO`：Content-Type 非 audio/webm 或 audio/mp4，或魔数验证失败
+            - `ERR_MISSING_QUESTION_ID`：question_id 字段缺失或格式非 UUID
+            - `ERR_QUESTION_NOT_FOUND`：question_id 在题库中不存在
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_audio:
+                  summary: 音频格式不支持
+                  value:
+                    error_code: "ERR_INVALID_AUDIO"
+                    message: "音频格式不支持。请上传 audio/webm 或 audio/mp4 格式文件。"
+                missing_question_id:
+                  summary: 缺少 question_id
+                  value:
+                    error_code: "ERR_MISSING_QUESTION_ID"
+                    message: "缺少必填字段 question_id。"
+                invalid_uuid:
+                  summary: question_id 格式错误
+                  value:
+                    error_code: "ERR_VALIDATION"
+                    message: "question_id 格式错误，须为有效 UUID。"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '413':
+          description: |
+            **413 Content Too Large** — 音频文件超过 10MB 限制（PRD §4.2）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_code: "ERR_FILE_TOO_LARGE"
+                message: "音频文件大小超过 10MB 限制。约 3 分钟录音约 2MB，请检查录音时长。"
+        '429':
+          description: |
+            **429 Too Many Requests** — 超出速率限制（每用户每分钟最多 3 次，PRD §5.3）
+          headers:
+            Retry-After:
+              description: 下次请求允许的等待秒数
+              schema:
+                type: integer
+              example: 45
+            X-RateLimit-Limit:
+              description: 每分钟最大允许请求次数
+              schema:
+                type: integer
+              example: 3
+            X-RateLimit-Remaining:
+              description: 当前时间窗内剩余请求次数
+              schema:
+                type: integer
+              example: 0
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_code: "ERR_RATE_LIMIT_EXCEEDED"
+                message: "请求过于频繁，每分钟最多提交 3 次，请 45 秒后重试。"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          description: |
+            **503 Service Unavailable** — 上游 AI 服务不可用（2 次重试后仍失败，PRD §4.2、§4.3）
+
+            可能的 error_code：
+            - `ERR_ASR_TIMEOUT`：Groq Whisper API 502/504 或超时，2 次指数退避重试后仍失败
+            - `ERR_LLM_PARSE_FAILED`：LLM 输出 Pydantic 校验失败，2 次重试后仍无法解析
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                asr_timeout:
+                  summary: ASR 服务超时
+                  value:
+                    error_code: "ERR_ASR_TIMEOUT"
+                    message: "语音转写服务当前不可用，请重试。"
+                llm_parse_failed:
+                  summary: LLM 输出解析失败
+                  value:
+                    error_code: "ERR_LLM_PARSE_FAILED"
+                    message: "AI 评估服务返回格式异常，请重试。"
+
+  # ------------------------------------------------------------
+  # 评估历史列表
+  # ------------------------------------------------------------
+  /api/v1/evaluations:
+    get:
+      tags:
+        - evaluations
+      summary: 获取当前用户评估历史
+      description: |
+        返回当前认证用户的评估记录列表（按创建时间倒序），用于 Dashboard 历史展示。
+
+        仅返回摘要字段（省略 transcript、reasoning、model_ideal_answer 等重型文本），
+        如需完整报告请使用 `GET /api/v1/evaluations/{evaluation_id}`。
+
+        数据隔离由 Supabase RLS 保证（`auth.uid() = user_id`），无需在查询参数中传 user_id。
+      operationId: listEvaluations
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: 页码（从 1 开始）
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          example: 1
+        - name: page_size
+          in: query
+          required: false
+          description: 每页条数
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+          example: 20
+        - name: question_type
+          in: query
+          required: false
+          description: 按题型过滤（可选）
+          schema:
+            $ref: '#/components/schemas/QuestionType'
+      responses:
+        '200':
+          description: 评估历史列表
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEvaluations'
+              example:
+                data:
+                  - id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                    question_id: "c7d8e9f0-1234-5678-9abc-def012345678"
+                    question_type: "COMPREHENSIVE_ANALYSIS"
+                    analysis_ability_score: 82.0
+                    organization_coordination_score: 65.0
+                    emergency_response_score: 78.0
+                    interpersonal_communication_score: 80.0
+                    language_expression_score: 77.0
+                    job_matching_score: 85.0
+                    paralinguistic_fluency_score: 74.0
+                    final_score: 79.35
+                    audio_duration_seconds: 173.5
+                    rule_violations:
+                      - "NO_SAFETY_PLAN"
+                    anti_template_warning: null
+                    created_at: "2026-02-28T10:00:00Z"
+                total: 42
+                page: 1
+                page_size: 20
+                has_more: true
+        '400':
+          description: |
+            **400 Bad Request** — 分页参数非法
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_code: "ERR_VALIDATION"
+                message: "page_size 不能超过 50。"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ------------------------------------------------------------
+  # 单条评估详情（复盘看板数据源）
+  # ------------------------------------------------------------
+  /api/v1/evaluations/{evaluation_id}:
+    get:
+      tags:
+        - evaluations
+      summary: 获取单条评估报告详情
+      description: |
+        返回指定评估记录的完整报告，包含所有文本字段，用于 REVIEW 复盘看板渲染。
+
+        包含内容：
+        - 七维评分（含 reasoning）
+        - transcript + transcript_segments（音频高亮同步）
+        - structural_framework_check（框架要素高亮）
+        - improvement_suggestions（改进建议列表）
+        - model_ideal_answer（左右双栏对照）
+        - anti_template_warning（警告横幅触发条件）
+
+        **访问控制**：仅记录所有者可访问（Supabase RLS）。越权访问返回 404（RLS 层）或 403（应用层额外校验）。
+      operationId: getEvaluation
+      parameters:
+        - name: evaluation_id
+          in: path
+          required: true
+          description: 评估记录 UUID
+          schema:
+            type: string
+            format: uuid
+          example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+      responses:
+        '200':
+          description: 完整评估报告
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvaluationResult'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: |
+            **404 Not Found** — 记录不存在，或属于其他用户（RLS 将越权访问表现为 404）
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error_code: "ERR_NOT_FOUND"
+                message: "评估记录不存在。"
+        '500':
+          $ref: '#/components/responses/InternalServerError'

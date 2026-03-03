@@ -1,0 +1,14 @@
+# Python caches
+**/__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Local secrets and env files
+interview-ai/backend/.env
+interview-ai/frontend/.env.local
+
+# Local media/debug artifacts
+interview-ai/backend/test-*.webm
+Untitled
+designs/Untitled

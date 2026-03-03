@@ -1,0 +1,68 @@
+graph TD
+
+    subgraph BROWSER["浏览器 Browser"]
+        UI["Next.js 14 CSR<br/>Zustand · Tailwind CSS · Shadcn/UI<br/>Recharts RadarChart"]
+        MR["MediaRecorder API<br/>audio/webm · audio/mp4"]
+    end
+
+    subgraph BFF["前端 BFF 层 · Next.js · Vercel"]
+        NH["App Router · Route Handlers<br/>SSR · Supabase JS Client"]
+    end
+
+    subgraph BACKEND["后端 AI 编排层 · FastAPI · Docker"]
+        EP["API 端点<br/>Bearer JWT 验证<br/>速率限制 3次/分钟/用户"]
+
+        subgraph PIPELINE["评估管道 (POST /evaluations/submit)"]
+            AP["音频管道<br/>python-magic 魔数验证<br/>ffmpeg → wav 16kHz mono<br/>10 MB 大小限制"]
+            ASR["ASR 模块<br/>Groq Whisper word_timestamps=True<br/>Prompt 截断注入 Top-20 关键词<br/>指数退避重试 × 2"]
+            VA["词汇分析<br/>Aho-Corasick 政策词汇命中率<br/>套话黑名单扫描<br/>正则黑名单 cliche_patterns.json (P1)"]
+            LLM["LLM 评估引擎<br/>Prompt 工厂 × 4 种 System Prompt<br/>beta.chat.completions.parse()<br/>Pydantic LLMEvaluationOutput"]
+            RE["规则引擎<br/>calculate_fluency_score 维度7 保底50<br/>apply_rule_caps 双保险硬钳制<br/>filter_unknown_violations"]
+            AGG["评分聚合<br/>InterviewResult.final_score<br/>7维加权 Σ wᵢ·sᵢ = 1.00"]
+        end
+    end
+
+    subgraph DB["数据层 · Supabase"]
+        AUTH["Supabase Auth<br/>JWT HS256 · TTL 3600s<br/>auth.get_user(token)"]
+        PG[("PostgreSQL 15<br/>questions · evaluations<br/>RLS: auth.uid = user_id<br/>append-only evaluations")]
+        ST[("Supabase Storage<br/>interview-audio · Private<br/>Service Role 写入<br/>Lifecycle TTL ≤ 24h")]
+    end
+
+    subgraph EXT["外部 API"]
+        GROQ["Groq API<br/>whisper-large-v3<br/>HTTPS REST"]
+        OAI["OpenAI API<br/>gpt-4o-mini<br/>HTTPS JSON Structured Output"]
+    end
+
+    %% 浏览器内部
+    MR -->|"Blob 内存保留（不写 IndexedDB）"| UI
+
+    %% 浏览器 → BFF
+    UI -->|"HTTPS multipart/form-data"| NH
+    UI -->|"HTTPS signInWithPassword"| AUTH
+
+    %% BFF → 后端 & 数据层
+    NH -->|"HTTPS REST Bearer JWT"| EP
+    NH -->|"HTTPS PostgREST Bearer JWT"| PG
+
+    %% 后端认证验证
+    EP -->|"supabase-py auth.get_user"| AUTH
+
+    %% 评估管道内部流
+    EP --> AP
+    AP --> ASR
+    ASR --> VA
+    VA --> LLM
+    LLM --> RE
+    RE --> AGG
+
+    %% 管道 → 数据层写入
+    AGG -->|"INSERT supabase-py HTTPS"| PG
+    AP -->|"PUT HTTPS Service Role"| ST
+
+    %% 后端 → 外部 API
+    ASR -->|"HTTPS multipart/form-data<br/>GROQ_API_KEY（仅后端）"| GROQ
+    LLM -->|"HTTPS JSON<br/>OPENAI_API_KEY（仅后端）"| OAI
+
+    %% 响应回路
+    EP -->|"HTTP JSON 201 EvaluationResult"| NH
+    NH -->|"SSR JSON hydration"| UI

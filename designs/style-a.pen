@@ -1,0 +1,2389 @@
+{
+  "version": "2.8",
+  "children": [
+    {
+      "type": "frame",
+      "id": "page_dashboard",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 1024,
+      "layout": "none",
+      "fill": "#F3F6FB",
+      "name": "总览页面",
+      "children": [
+        {
+          "type": "frame",
+          "id": "p1_top",
+          "x": 0,
+          "y": 0,
+          "width": 1440,
+          "height": 88,
+          "layout": "none",
+          "fill": "#FFFFFF",
+          "stroke": {
+            "thickness": 1,
+            "fill": "#DCE5F4"
+          },
+          "children": [
+            {
+              "type": "frame",
+              "id": "p1_logo",
+              "x": 16,
+              "y": 20,
+              "width": 36,
+              "height": 36,
+              "layout": "none",
+              "fill": "#3563E9",
+              "cornerRadius": 10,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p1_logo_t",
+                  "x": 10,
+                  "y": 8,
+                  "width": 20,
+                  "height": 20,
+                  "textGrowth": "fixed-width-height",
+                  "content": "智",
+                  "fill": "#FFFFFF",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "p1_title",
+              "x": 62,
+              "y": 26,
+              "width": 280,
+              "height": 28,
+              "textGrowth": "fixed-width-height",
+              "content": "面试官应用",
+              "fill": "#1F2A3D",
+              "fontFamily": "Inter",
+              "fontSize": 24,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "p1_search",
+              "x": 1120,
+              "y": 22,
+              "width": 200,
+              "height": 40,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 10,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p1_search_t",
+                  "x": 12,
+                  "y": 11,
+                  "width": 170,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "搜索题型或关键词",
+                  "fill": "#9AA8BE",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p1_avatar",
+              "x": 1332,
+              "y": 24,
+              "width": 32,
+              "height": 32,
+              "layout": "none",
+              "fill": "#E8F0FF",
+              "cornerRadius": 16
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p1_side",
+          "x": 24,
+          "y": 112,
+          "width": 220,
+          "height": 880,
+          "layout": "none",
+          "fill": "#FFFFFF",
+          "cornerRadius": 18,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#DCE5F4"
+          },
+          "children": [
+            {
+              "type": "text",
+              "id": "p1_nav_h",
+              "x": 16,
+              "y": 16,
+              "width": 80,
+              "height": 18,
+              "textGrowth": "fixed-width-height",
+              "content": "导航",
+              "fill": "#6F7E98",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "p1_nav_1",
+              "x": 12,
+              "y": 48,
+              "width": 196,
+              "height": 46,
+              "layout": "none",
+              "fill": "#E8F0FF",
+              "cornerRadius": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p1_nav_1_t",
+                  "x": 14,
+                  "y": 14,
+                  "width": 160,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "首页总览",
+                  "fill": "#3563E9",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p1_nav_2",
+              "x": 12,
+              "y": 106,
+              "width": 196,
+              "height": 46,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 12,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p1_nav_2_t",
+                  "x": 14,
+                  "y": 14,
+                  "width": 160,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "模拟考场",
+                  "fill": "#6F7E98",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p1_nav_3",
+              "x": 12,
+              "y": 164,
+              "width": 196,
+              "height": 46,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 12,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p1_nav_3_t",
+                  "x": 14,
+                  "y": 14,
+                  "width": 160,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "复盘看板",
+                  "fill": "#6F7E98",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p1_nav_4",
+              "x": 12,
+              "y": 222,
+              "width": 196,
+              "height": 46,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 12,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p1_nav_4_t",
+                  "x": 14,
+                  "y": 14,
+                  "width": 160,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "个人中心",
+                  "fill": "#6F7E98",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p1_main",
+          "x": 268,
+          "y": 112,
+          "width": 848,
+          "height": 880,
+          "layout": "none",
+          "fill": "#EEF3FA",
+          "cornerRadius": 18,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#DCE5F4"
+          },
+          "children": [
+            {
+              "type": "frame",
+              "id": "p1_hero",
+              "x": 16,
+              "y": 16,
+              "width": 816,
+              "height": 120,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p1_hero_t",
+                  "x": 20,
+                  "y": 20,
+                  "width": 540,
+                  "height": 32,
+                  "textGrowth": "fixed-width-height",
+                  "content": "欢迎回来，继续冲刺高分答题",
+                  "fill": "#1F2A3D",
+                  "fontFamily": "Inter",
+                  "fontSize": 28,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "p1_hero_s",
+                  "x": 20,
+                  "y": 60,
+                  "width": 540,
+                  "height": 20,
+                  "textGrowth": "fixed-width-height",
+                  "content": "建议优先完成结构化模拟并提交复盘",
+                  "fill": "#6F7E98",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "p1_hero_btn",
+                  "x": 660,
+                  "y": 36,
+                  "width": 130,
+                  "height": 44,
+                  "layout": "none",
+                  "fill": "#3563E9",
+                  "cornerRadius": 12,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "p1_hero_btn_t",
+                      "x": 35,
+                      "y": 13,
+                      "width": 64,
+                      "height": 18,
+                      "textGrowth": "fixed-width-height",
+                      "content": "开始模拟",
+                      "fill": "#FFFFFF",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p1_kpi_1",
+              "x": 16,
+              "y": 148,
+              "width": 256,
+              "height": 96,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p1_kpi_1_t",
+                  "x": 16,
+                  "y": 16,
+                  "width": 120,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "连续训练",
+                  "fill": "#6F7E98",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "p1_kpi_1_v",
+                  "x": 16,
+                  "y": 42,
+                  "width": 120,
+                  "height": 36,
+                  "textGrowth": "fixed-width-height",
+                  "content": "18天",
+                  "fill": "#1F2A3D",
+                  "fontFamily": "Inter",
+                  "fontSize": 28,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p1_kpi_2",
+              "x": 288,
+              "y": 148,
+              "width": 256,
+              "height": 96,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p1_kpi_2_t",
+                  "x": 16,
+                  "y": 16,
+                  "width": 120,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "已答真题",
+                  "fill": "#6F7E98",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "p1_kpi_2_v",
+                  "x": 16,
+                  "y": 42,
+                  "width": 140,
+                  "height": 36,
+                  "textGrowth": "fixed-width-height",
+                  "content": "210道",
+                  "fill": "#1F2A3D",
+                  "fontFamily": "Inter",
+                  "fontSize": 26,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p1_kpi_3",
+              "x": 560,
+              "y": 148,
+              "width": 256,
+              "height": 96,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p1_kpi_3_t",
+                  "x": 16,
+                  "y": 16,
+                  "width": 120,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "当前排名",
+                  "fill": "#6F7E98",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "p1_kpi_3_v",
+                  "x": 16,
+                  "y": 42,
+                  "width": 180,
+                  "height": 36,
+                  "textGrowth": "fixed-width-height",
+                  "content": "前12%",
+                  "fill": "#1F2A3D",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p1_task",
+              "x": 16,
+              "y": 256,
+              "width": 816,
+              "height": 180,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p1_task_t",
+                  "x": 16,
+                  "y": 16,
+                  "width": 160,
+                  "height": 24,
+                  "textGrowth": "fixed-width-height",
+                  "content": "今日任务",
+                  "fill": "#1F2A3D",
+                  "fontFamily": "Inter",
+                  "fontSize": 22,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "p1_task_1",
+                  "x": 16,
+                  "y": 56,
+                  "width": 760,
+                  "height": 20,
+                  "textGrowth": "fixed-width-height",
+                  "content": "1. 结构化模拟：人际关系类（进行中）",
+                  "fill": "#6F7E98",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "p1_task_2",
+                  "x": 16,
+                  "y": 84,
+                  "width": 760,
+                  "height": 20,
+                  "textGrowth": "fixed-width-height",
+                  "content": "2. 时政分析：重点政策梳理",
+                  "fill": "#6F7E98",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "p1_task_3",
+                  "x": 16,
+                  "y": 112,
+                  "width": 760,
+                  "height": 20,
+                  "textGrowth": "fixed-width-height",
+                  "content": "3. 复盘看板：核查改进建议",
+                  "fill": "#6F7E98",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p1_prog",
+              "x": 16,
+              "y": 448,
+              "width": 816,
+              "height": 104,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p1_prog_t",
+                  "x": 16,
+                  "y": 14,
+                  "width": 120,
+                  "height": 22,
+                  "textGrowth": "fixed-width-height",
+                  "content": "训练进度",
+                  "fill": "#1F2A3D",
+                  "fontFamily": "Inter",
+                  "fontSize": 18,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "p1_prog_bg",
+                  "x": 16,
+                  "y": 46,
+                  "width": 784,
+                  "height": 12,
+                  "layout": "none",
+                  "fill": "#E9EFFA",
+                  "cornerRadius": 999
+                },
+                {
+                  "type": "frame",
+                  "id": "p1_prog_fg",
+                  "x": 16,
+                  "y": 46,
+                  "width": 486,
+                  "height": 12,
+                  "layout": "none",
+                  "fill": "#3563E9",
+                  "cornerRadius": 999
+                },
+                {
+                  "type": "text",
+                  "id": "p1_prog_s",
+                  "x": 16,
+                  "y": 68,
+                  "width": 760,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "本周完成度62%，建议保持每日2题节奏",
+                  "fill": "#6F7E98",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p1_state",
+              "x": 16,
+              "y": 566,
+              "width": 816,
+              "height": 136,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p1_state_t",
+                  "x": 16,
+                  "y": 14,
+                  "width": 170,
+                  "height": 24,
+                  "textGrowth": "fixed-width-height",
+                  "content": "面试状态总线",
+                  "fill": "#1F2A3D",
+                  "fontFamily": "Inter",
+                  "fontSize": 20,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "p1_st_1",
+                  "x": 16,
+                  "y": 50,
+                  "width": 120,
+                  "height": 34,
+                  "layout": "none",
+                  "fill": "#E8F0FF",
+                  "cornerRadius": 999,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "p1_st_1_t",
+                      "x": 36,
+                      "y": 8,
+                      "width": 60,
+                      "height": 18,
+                      "textGrowth": "fixed-width-height",
+                      "content": "空闲",
+                      "fill": "#3563E9",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "p1_st_2",
+                  "x": 146,
+                  "y": 50,
+                  "width": 120,
+                  "height": 34,
+                  "layout": "none",
+                  "fill": "#F5F8FF",
+                  "cornerRadius": 999,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#DCE5F4"
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "p1_st_2_t",
+                      "x": 36,
+                      "y": 8,
+                      "width": 60,
+                      "height": 18,
+                      "textGrowth": "fixed-width-height",
+                      "content": "审题",
+                      "fill": "#6F7E98",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "p1_st_3",
+                  "x": 276,
+                  "y": 50,
+                  "width": 120,
+                  "height": 34,
+                  "layout": "none",
+                  "fill": "#F5F8FF",
+                  "cornerRadius": 999,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#DCE5F4"
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "p1_st_3_t",
+                      "x": 36,
+                      "y": 8,
+                      "width": 60,
+                      "height": 18,
+                      "textGrowth": "fixed-width-height",
+                      "content": "作答",
+                      "fill": "#6F7E98",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "p1_st_4",
+                  "x": 406,
+                  "y": 50,
+                  "width": 120,
+                  "height": 34,
+                  "layout": "none",
+                  "fill": "#F5F8FF",
+                  "cornerRadius": 999,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#DCE5F4"
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "p1_st_4_t",
+                      "x": 30,
+                      "y": 8,
+                      "width": 70,
+                      "height": 18,
+                      "textGrowth": "fixed-width-height",
+                      "content": "处理中",
+                      "fill": "#6F7E98",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "p1_st_5",
+                  "x": 536,
+                  "y": 50,
+                  "width": 120,
+                  "height": 34,
+                  "layout": "none",
+                  "fill": "#F5F8FF",
+                  "cornerRadius": 999,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#DCE5F4"
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "p1_st_5_t",
+                      "x": 36,
+                      "y": 8,
+                      "width": 60,
+                      "height": 18,
+                      "textGrowth": "fixed-width-height",
+                      "content": "复盘",
+                      "fill": "#6F7E98",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "p1_state_warn",
+                  "x": 16,
+                  "y": 96,
+                  "width": 760,
+                  "height": 20,
+                  "textGrowth": "fixed-width-height",
+                  "content": "网络异常时请勿刷新页面，恢复后点击重试上传",
+                  "fill": "#D55A2A",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p1_logs",
+              "x": 16,
+              "y": 714,
+              "width": 816,
+              "height": 150,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p1_logs_t",
+                  "x": 16,
+                  "y": 14,
+                  "width": 180,
+                  "height": 24,
+                  "textGrowth": "fixed-width-height",
+                  "content": "最近模拟记录",
+                  "fill": "#1F2A3D",
+                  "fontFamily": "Inter",
+                  "fontSize": 20,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "p1_logs_h",
+                  "x": 16,
+                  "y": 46,
+                  "width": 760,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "题型      用时      评分      结果",
+                  "fill": "#6F7E98",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "p1_logs_1",
+                  "x": 16,
+                  "y": 72,
+                  "width": 760,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "人际关系  2分42秒  87分  已复盘",
+                  "fill": "#4A5A73",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "p1_logs_2",
+                  "x": 16,
+                  "y": 94,
+                  "width": 760,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "应急应变  3分00秒      82分  待复盘",
+                  "fill": "#4A5A73",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "p1_logs_3",
+                  "x": 16,
+                  "y": 116,
+                  "width": 760,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "综合分析  2分36秒  91分  已复盘",
+                  "fill": "#4A5A73",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p1_right",
+          "x": 1140,
+          "y": 112,
+          "width": 276,
+          "height": 880,
+          "layout": "none",
+          "fill": "#FFFFFF",
+          "cornerRadius": 18,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#DCE5F4"
+          },
+          "children": [
+            {
+              "type": "frame",
+              "id": "p1_score",
+              "x": 12,
+              "y": 16,
+              "width": 252,
+              "height": 120,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p1_score_t",
+                  "x": 14,
+                  "y": 14,
+                  "width": 120,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "本周表现",
+                  "fill": "#6F7E98",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "p1_score_v",
+                  "x": 14,
+                  "y": 44,
+                  "width": 220,
+                  "height": 36,
+                  "textGrowth": "fixed-width-height",
+                  "content": "综合评分87",
+                  "fill": "#1F2A3D",
+                  "fontFamily": "Inter",
+                  "fontSize": 26,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p1_quick",
+              "x": 12,
+              "y": 148,
+              "width": 252,
+              "height": 170,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p1_quick_t",
+                  "x": 14,
+                  "y": 14,
+                  "width": 140,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "快速创建练习",
+                  "fill": "#6F7E98",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "p1_input",
+                  "x": 14,
+                  "y": 44,
+                  "width": 224,
+                  "height": 40,
+                  "layout": "none",
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 10,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#DCE5F4"
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "p1_input_t",
+                      "x": 10,
+                      "y": 11,
+                      "width": 180,
+                      "height": 18,
+                      "textGrowth": "fixed-width-height",
+                      "content": "请输入题目关键词",
+                      "fill": "#9AA8BE",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "p1_create",
+                  "x": 14,
+                  "y": 96,
+                  "width": 224,
+                  "height": 40,
+                  "layout": "none",
+                  "fill": "#3563E9",
+                  "cornerRadius": 12,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "p1_create_t",
+                      "x": 62,
+                      "y": 11,
+                      "width": 100,
+                      "height": 18,
+                      "textGrowth": "fixed-width-height",
+                      "content": "生成专项训练",
+                      "fill": "#FFFFFF",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "page_login",
+      "x": 1600,
+      "y": 0,
+      "width": 1440,
+      "height": 1024,
+      "layout": "none",
+      "fill": "#F3F6FB",
+      "name": "登录页面",
+      "children": [
+        {
+          "type": "frame",
+          "id": "p2_left",
+          "x": 80,
+          "y": 90,
+          "width": 620,
+          "height": 844,
+          "layout": "none",
+          "fill": "#EAF1FD",
+          "cornerRadius": 28,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#DCE5F4"
+          },
+          "children": [
+            {
+              "type": "frame",
+              "id": "p2_logo",
+              "x": 40,
+              "y": 44,
+              "width": 52,
+              "height": 52,
+              "layout": "none",
+              "fill": "#3563E9",
+              "cornerRadius": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p2_logo_t",
+                  "x": 16,
+                  "y": 14,
+                  "width": 20,
+                  "height": 24,
+                  "textGrowth": "fixed-width-height",
+                  "content": "智",
+                  "fill": "#FFFFFF",
+                  "fontFamily": "Inter",
+                  "fontSize": 18,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "p2_t",
+              "x": 40,
+              "y": 124,
+              "width": 520,
+              "height": 68,
+              "textGrowth": "fixed-width-height",
+              "content": "公务员结构化面试训练",
+              "fill": "#1F2A3D",
+              "fontFamily": "Inter",
+              "fontSize": 44,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "p2_s",
+              "x": 40,
+              "y": 208,
+              "width": 520,
+              "height": 52,
+              "textGrowth": "fixed-width-height",
+              "content": "登录后进入个人训练空间，完成模拟、评分与复盘闭环。",
+              "fill": "#50607A",
+              "fontFamily": "Inter",
+              "fontSize": 18,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "p2_b1",
+              "x": 40,
+              "y": 316,
+              "width": 520,
+              "height": 24,
+              "textGrowth": "fixed-width-height",
+              "content": "1. 低并发内测，聚焦真实答题体验",
+              "fill": "#5C6C85",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "p2_b2",
+              "x": 40,
+              "y": 348,
+              "width": 520,
+              "height": 24,
+              "textGrowth": "fixed-width-height",
+              "content": "2. 会话令牌仅保存于当前会话",
+              "fill": "#5C6C85",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "p2_b3",
+              "x": 40,
+              "y": 380,
+              "width": 520,
+              "height": 24,
+              "textGrowth": "fixed-width-height",
+              "content": "3. 完整链路：模拟、处理、复盘",
+              "fill": "#5C6C85",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p2_card",
+          "x": 780,
+          "y": 170,
+          "width": 520,
+          "height": 680,
+          "layout": "none",
+          "fill": "#FFFFFF",
+          "cornerRadius": 24,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#DCE5F4"
+          },
+          "children": [
+            {
+              "type": "text",
+              "id": "p2_card_t",
+              "x": 48,
+              "y": 52,
+              "width": 300,
+              "height": 40,
+              "textGrowth": "fixed-width-height",
+              "content": "账号登录",
+              "fill": "#1F2A3D",
+              "fontFamily": "Inter",
+              "fontSize": 32,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "p2_card_s",
+              "x": 48,
+              "y": 98,
+              "width": 360,
+              "height": 22,
+              "textGrowth": "fixed-width-height",
+              "content": "请输入邮箱和密码进入训练空间",
+              "fill": "#6F7E98",
+              "fontFamily": "Inter",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "p2_mail_l",
+              "x": 48,
+              "y": 156,
+              "width": 120,
+              "height": 20,
+              "textGrowth": "fixed-width-height",
+              "content": "邮箱",
+              "fill": "#50607A",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "p2_mail_i",
+              "x": 48,
+              "y": 182,
+              "width": 424,
+              "height": 50,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 12,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p2_mail_p",
+                  "x": 14,
+                  "y": 14,
+                  "width": 320,
+                  "height": 20,
+                  "textGrowth": "fixed-width-height",
+                  "content": "请输入内测邮箱",
+                  "fill": "#9AA8BE",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "p2_pwd_l",
+              "x": 48,
+              "y": 252,
+              "width": 120,
+              "height": 20,
+              "textGrowth": "fixed-width-height",
+              "content": "密码",
+              "fill": "#50607A",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "p2_pwd_i",
+              "x": 48,
+              "y": 278,
+              "width": 424,
+              "height": 50,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 12,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p2_pwd_p",
+                  "x": 14,
+                  "y": 14,
+                  "width": 320,
+                  "height": 20,
+                  "textGrowth": "fixed-width-height",
+                  "content": "请输入密码",
+                  "fill": "#9AA8BE",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "p2_err",
+              "x": 48,
+              "y": 340,
+              "width": 424,
+              "height": 20,
+              "textGrowth": "fixed-width-height",
+              "content": "邮箱或密码错误",
+              "fill": "#D94848",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "p2_btn",
+              "x": 48,
+              "y": 378,
+              "width": 424,
+              "height": 52,
+              "layout": "none",
+              "fill": "#3563E9",
+              "cornerRadius": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p2_btn_t",
+                  "x": 188,
+                  "y": 15,
+                  "width": 60,
+                  "height": 20,
+                  "textGrowth": "fixed-width-height",
+                  "content": "登录",
+                  "fill": "#FFFFFF",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "p2_hint",
+              "x": 48,
+              "y": 444,
+              "width": 424,
+              "height": 20,
+              "textGrowth": "fixed-width-height",
+              "content": "登录后会话令牌将写入当前会话存储",
+              "fill": "#6F7E98",
+              "fontFamily": "Inter",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "page_mock",
+      "x": 3200,
+      "y": 0,
+      "width": 1440,
+      "height": 1024,
+      "layout": "none",
+      "fill": "#F3F6FB",
+      "name": "模拟页面",
+      "children": [
+        {
+          "type": "frame",
+          "id": "p3_top",
+          "x": 32,
+          "y": 24,
+          "width": 1376,
+          "height": 74,
+          "layout": "none",
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#DCE5F4"
+          },
+          "children": [
+            {
+              "type": "text",
+              "id": "p3_top_t",
+              "x": 20,
+              "y": 22,
+              "width": 240,
+              "height": 30,
+              "textGrowth": "fixed-width-height",
+              "content": "模拟考场",
+              "fill": "#1F2A3D",
+              "fontFamily": "Inter",
+              "fontSize": 24,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "p3_st1",
+              "x": 860,
+              "y": 20,
+              "width": 110,
+              "height": 34,
+              "layout": "none",
+              "fill": "#E8F0FF",
+              "cornerRadius": 999,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p3_st1_t",
+                  "x": 34,
+                  "y": 8,
+                  "width": 60,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "审题",
+                  "fill": "#3563E9",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p3_st2",
+              "x": 980,
+              "y": 20,
+              "width": 110,
+              "height": 34,
+              "layout": "none",
+              "fill": "#F5F8FF",
+              "cornerRadius": 999,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p3_st2_t",
+                  "x": 34,
+                  "y": 8,
+                  "width": 60,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "作答",
+                  "fill": "#6F7E98",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p3_st3",
+              "x": 1100,
+              "y": 20,
+              "width": 110,
+              "height": 34,
+              "layout": "none",
+              "fill": "#F5F8FF",
+              "cornerRadius": 999,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p3_st3_t",
+                  "x": 24,
+                  "y": 8,
+                  "width": 70,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "处理中",
+                  "fill": "#6F7E98",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p3_st4",
+              "x": 1220,
+              "y": 20,
+              "width": 110,
+              "height": 34,
+              "layout": "none",
+              "fill": "#F5F8FF",
+              "cornerRadius": 999,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p3_st4_t",
+                  "x": 34,
+                  "y": 8,
+                  "width": 60,
+                  "height": 18,
+                  "textGrowth": "fixed-width-height",
+                  "content": "复盘",
+                  "fill": "#6F7E98",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p3_main",
+          "x": 32,
+          "y": 114,
+          "width": 930,
+          "height": 760,
+          "layout": "none",
+          "fill": "#FFFFFF",
+          "cornerRadius": 18,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#DCE5F4"
+          },
+          "children": [
+            {
+              "type": "text",
+              "id": "p3_type",
+              "x": 24,
+              "y": 24,
+              "width": 180,
+              "height": 22,
+              "textGrowth": "fixed-width-height",
+              "content": "题型：应急应变",
+              "fill": "#3563E9",
+              "fontFamily": "Inter",
+              "fontSize": 16,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "p3_q",
+              "x": 24,
+              "y": 58,
+              "width": 680,
+              "height": 180,
+              "textGrowth": "fixed-width-height",
+              "content": "你所在社区突发停水，居民情绪激动并传播不实信息。请在3分钟内说明处置思路，包括先期响应、信息澄清、协同机制与后续复盘。",
+              "fill": "#1F2A3D",
+              "fontFamily": "Inter",
+              "fontSize": 22,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "p3_timer",
+              "x": 730,
+              "y": 24,
+              "width": 176,
+              "height": 76,
+              "layout": "none",
+              "fill": "#F5F8FF",
+              "cornerRadius": 14,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p3_timer_t",
+                  "x": 18,
+                  "y": 20,
+                  "width": 140,
+                  "height": 34,
+                  "textGrowth": "fixed-width-height",
+                  "content": "2分36秒",
+                  "fill": "#1F2A3D",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p3_wave",
+              "x": 24,
+              "y": 280,
+              "width": 882,
+              "height": 280,
+              "layout": "none",
+              "fill": "#F8FAFF",
+              "cornerRadius": 14,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p3_wave_t",
+                  "x": 220,
+                  "y": 126,
+                  "width": 420,
+                  "height": 24,
+                  "textGrowth": "fixed-width-height",
+                  "content": "录音波形区域（语音采集与电平监测）",
+                  "fill": "#6F7E98",
+                  "fontFamily": "Inter",
+                  "fontSize": 18,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "p3_warn",
+              "x": 24,
+              "y": 582,
+              "width": 860,
+              "height": 22,
+              "textGrowth": "fixed-width-height",
+              "content": "网络异常时请勿刷新页面，恢复后点击重试上传继续。",
+              "fill": "#D55A2A",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p3_side",
+          "x": 978,
+          "y": 114,
+          "width": 430,
+          "height": 760,
+          "layout": "none",
+          "fill": "#FFFFFF",
+          "cornerRadius": 18,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#DCE5F4"
+          },
+          "children": [
+            {
+              "type": "frame",
+              "id": "p3_dev",
+              "x": 18,
+              "y": 18,
+              "width": 394,
+              "height": 136,
+              "layout": "none",
+              "fill": "#F6F9FF",
+              "cornerRadius": 12,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p3_dev_t",
+                  "x": 14,
+                  "y": 14,
+                  "width": 180,
+                  "height": 20,
+                  "textGrowth": "fixed-width-height",
+                  "content": "设备与麦克风检测",
+                  "fill": "#4F5F79",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "p3_dev_s",
+                  "x": 14,
+                  "y": 48,
+                  "width": 360,
+                  "height": 20,
+                  "textGrowth": "fixed-width-height",
+                  "content": "状态：权限已授予，输入电平正常",
+                  "fill": "#3563E9",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "p3_queue_t",
+              "x": 18,
+              "y": 178,
+              "width": 220,
+              "height": 22,
+              "textGrowth": "fixed-width-height",
+              "content": "题目队列（3/5）",
+              "fill": "#1F2A3D",
+              "fontFamily": "Inter",
+              "fontSize": 18,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "p3_queue",
+              "x": 18,
+              "y": 208,
+              "width": 394,
+              "height": 210,
+              "textGrowth": "fixed-width-height",
+              "content": "1. 综合分析（已完成）\n2. 人际关系（已完成）\n3. 应急应变（进行中）\n4. 组织管理（待开始）\n5. 情景模拟（待开始）",
+              "fill": "#5C6C85",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "p3_upload",
+              "x": 18,
+              "y": 642,
+              "width": 394,
+              "height": 100,
+              "layout": "none",
+              "fill": "#F6F9FF",
+              "cornerRadius": 12,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p3_upload_t",
+                  "x": 14,
+                  "y": 16,
+                  "width": 360,
+                  "height": 56,
+                  "textGrowth": "fixed-width-height",
+                  "content": "上传状态：等待提交\n预计处理耗时不超过15秒\n失败时保留录音于当前页面内存",
+                  "fill": "#5C6C85",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p3_bottom",
+          "x": 32,
+          "y": 892,
+          "width": 1376,
+          "height": 96,
+          "layout": "none",
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#DCE5F4"
+          },
+          "children": [
+            {
+              "type": "frame",
+              "id": "p3_retry",
+              "x": 602,
+              "y": 24,
+              "width": 240,
+              "height": 48,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 12,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p3_retry_t",
+                  "x": 76,
+                  "y": 14,
+                  "width": 100,
+                  "height": 20,
+                  "textGrowth": "fixed-width-height",
+                  "content": "重试上传",
+                  "fill": "#5C6C85",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p3_end",
+              "x": 860,
+              "y": 24,
+              "width": 240,
+              "height": 48,
+              "layout": "none",
+              "fill": "#E8F0FF",
+              "cornerRadius": 12,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p3_end_t",
+                  "x": 74,
+                  "y": 14,
+                  "width": 92,
+                  "height": 20,
+                  "textGrowth": "fixed-width-height",
+                  "content": "作答结束",
+                  "fill": "#3563E9",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p3_start",
+              "x": 1118,
+              "y": 24,
+              "width": 240,
+              "height": 48,
+              "layout": "none",
+              "fill": "#3563E9",
+              "cornerRadius": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p3_start_t",
+                  "x": 66,
+                  "y": 14,
+                  "width": 120,
+                  "height": 20,
+                  "textGrowth": "fixed-width-height",
+                  "content": "开始作答",
+                  "fill": "#FFFFFF",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "page_review",
+      "x": 4800,
+      "y": 0,
+      "width": 1440,
+      "height": 1024,
+      "layout": "none",
+      "fill": "#F3F6FB",
+      "name": "复盘页面",
+      "children": [
+        {
+          "type": "frame",
+          "id": "p4_top",
+          "x": 32,
+          "y": 24,
+          "width": 1376,
+          "height": 74,
+          "layout": "none",
+          "fill": "#FFFFFF",
+          "cornerRadius": 16,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#DCE5F4"
+          },
+          "children": [
+            {
+              "type": "text",
+              "id": "p4_top_t",
+              "x": 20,
+              "y": 20,
+              "width": 260,
+              "height": 30,
+              "textGrowth": "fixed-width-height",
+              "content": "复盘看板",
+              "fill": "#1F2A3D",
+              "fontFamily": "Inter",
+              "fontSize": 24,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "p4_top_s",
+              "x": 290,
+              "y": 26,
+              "width": 420,
+              "height": 20,
+              "textGrowth": "fixed-width-height",
+              "content": "提交成功，处理耗时11.2秒",
+              "fill": "#6F7E98",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p4_warn",
+          "x": 32,
+          "y": 112,
+          "width": 1376,
+          "height": 64,
+          "layout": "none",
+          "fill": "#FFF4EE",
+          "cornerRadius": 14,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#FFD9C9"
+          },
+          "children": [
+            {
+              "type": "text",
+              "id": "p4_warn_t",
+              "x": 16,
+              "y": 22,
+              "width": 1320,
+              "height": 20,
+              "textGrowth": "fixed-width-height",
+              "content": "反模板化预警：检测到高频套话命中3条，建议结合具体情境重组答案结构。",
+              "fill": "#D55A2A",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p4_left",
+          "x": 32,
+          "y": 188,
+          "width": 860,
+          "height": 804,
+          "layout": "none",
+          "fill": "#EEF3FA",
+          "cornerRadius": 18,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#DCE5F4"
+          },
+          "children": [
+            {
+              "type": "frame",
+              "id": "p4_score",
+              "x": 16,
+              "y": 16,
+              "width": 828,
+              "height": 276,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p4_score_t",
+                  "x": 16,
+                  "y": 14,
+                  "width": 220,
+                  "height": 24,
+                  "textGrowth": "fixed-width-height",
+                  "content": "7维评分",
+                  "fill": "#1F2A3D",
+                  "fontFamily": "Inter",
+                  "fontSize": 20,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "p4_radar",
+                  "x": 16,
+                  "y": 50,
+                  "width": 500,
+                  "height": 210,
+                  "layout": "none",
+                  "fill": "#F4F7FF",
+                  "cornerRadius": 12,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#DCE5F4"
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "p4_radar_t",
+                      "x": 150,
+                      "y": 92,
+                      "width": 220,
+                      "height": 24,
+                      "textGrowth": "fixed-width-height",
+                      "content": "7维雷达图区域",
+                      "fill": "#6F7E98",
+                      "fontFamily": "Inter",
+                      "fontSize": 18,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "p4_score_l",
+                  "x": 530,
+                  "y": 56,
+                  "width": 282,
+                  "height": 198,
+                  "textGrowth": "fixed-width-height",
+                  "content": "分析能力 88\n组织协调 84\n应急响应 91\n人际沟通 82\n语言表达 86\n岗位匹配 85\n副语言流畅 80",
+                  "fill": "#4A5A73",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p4_audio",
+              "x": 16,
+              "y": 306,
+              "width": 828,
+              "height": 130,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p4_audio_t",
+                  "x": 16,
+                  "y": 14,
+                  "width": 260,
+                  "height": 20,
+                  "textGrowth": "fixed-width-height",
+                  "content": "原音回放与进度同步",
+                  "fill": "#1F2A3D",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "p4_audio_bg",
+                  "x": 16,
+                  "y": 56,
+                  "width": 796,
+                  "height": 12,
+                  "layout": "none",
+                  "fill": "#E9EFFA",
+                  "cornerRadius": 999
+                },
+                {
+                  "type": "frame",
+                  "id": "p4_audio_fg",
+                  "x": 16,
+                  "y": 56,
+                  "width": 520,
+                  "height": 12,
+                  "layout": "none",
+                  "fill": "#3563E9",
+                  "cornerRadius": 999
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p4_trans",
+              "x": 16,
+              "y": 450,
+              "width": 828,
+              "height": 338,
+              "layout": "none",
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p4_trans_t",
+                  "x": 16,
+                  "y": 14,
+                  "width": 220,
+                  "height": 22,
+                  "textGrowth": "fixed-width-height",
+                  "content": "转写文本（同步高亮）",
+                  "fill": "#1F2A3D",
+                  "fontFamily": "Inter",
+                  "fontSize": 18,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "p4_trans_c",
+                  "x": 16,
+                  "y": 48,
+                  "width": 796,
+                  "height": 260,
+                  "textGrowth": "fixed-width-height",
+                  "content": "0分02秒：请居民先保持秩序，已确认主干管故障。\n0分38秒：启动应急供水点并发布官方澄清。\n1分15秒：统一答复不实信息，避免2次恐慌。\n2分10秒：后续将复盘流程并建立长效预案。",
+                  "fill": "#4A5A73",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p4_right",
+          "x": 908,
+          "y": 188,
+          "width": 500,
+          "height": 804,
+          "layout": "none",
+          "fill": "#FFFFFF",
+          "cornerRadius": 18,
+          "stroke": {
+            "thickness": 1,
+            "fill": "#DCE5F4"
+          },
+          "children": [
+            {
+              "type": "frame",
+              "id": "p4_cmp",
+              "x": 16,
+              "y": 16,
+              "width": 468,
+              "height": 360,
+              "layout": "none",
+              "fill": "#F8FAFF",
+              "cornerRadius": 14,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p4_cmp_t",
+                  "x": 14,
+                  "y": 12,
+                  "width": 260,
+                  "height": 22,
+                  "textGrowth": "fixed-width-height",
+                  "content": "考生原文与示范答案对照",
+                  "fill": "#1F2A3D",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "p4_cmp_l",
+                  "x": 14,
+                  "y": 46,
+                  "width": 214,
+                  "height": 300,
+                  "textGrowth": "fixed-width-height",
+                  "content": "考生原文\n\n处置顺序基本完整，\n但长效机制描述较弱。\n建议强化部门协同与追责。",
+                  "fill": "#5C6C85",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "p4_cmp_r",
+                  "x": 242,
+                  "y": 46,
+                  "width": 214,
+                  "height": 300,
+                  "textGrowth": "fixed-width-height",
+                  "content": "示范答案\n\n按稳情绪、快供水、准澄清、\n强协同、建机制结构展开，\n补充演练与复盘闭环。",
+                  "fill": "#3563E9",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p4_sug",
+              "x": 16,
+              "y": 392,
+              "width": 468,
+              "height": 200,
+              "layout": "none",
+              "fill": "#F8FAFF",
+              "cornerRadius": 14,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p4_sug_t",
+                  "x": 14,
+                  "y": 12,
+                  "width": 200,
+                  "height": 22,
+                  "textGrowth": "fixed-width-height",
+                  "content": "改进建议",
+                  "fill": "#1F2A3D",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "p4_sug_c",
+                  "x": 14,
+                  "y": 42,
+                  "width": 440,
+                  "height": 140,
+                  "textGrowth": "fixed-width-height",
+                  "content": "1. 开场先安抚情绪并给出明确时间预期。\n2. 澄清信息统一口径并附权威来源。\n3. 结尾补充责任分工与长效机制。",
+                  "fill": "#4A5A73",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p4_chk",
+              "x": 16,
+              "y": 608,
+              "width": 468,
+              "height": 180,
+              "layout": "none",
+              "fill": "#F8FAFF",
+              "cornerRadius": 14,
+              "stroke": {
+                "thickness": 1,
+                "fill": "#DCE5F4"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p4_chk_t",
+                  "x": 14,
+                  "y": 12,
+                  "width": 220,
+                  "height": 22,
+                  "textGrowth": "fixed-width-height",
+                  "content": "结构框架检查",
+                  "fill": "#1F2A3D",
+                  "fontFamily": "Inter",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "p4_chk_m",
+                  "x": 14,
+                  "y": 48,
+                  "width": 438,
+                  "height": 46,
+                  "layout": "none",
+                  "fill": "#FFF1F1",
+                  "cornerRadius": 10,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#FFD2D2"
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "p4_chk_m_t",
+                      "x": 12,
+                      "y": 14,
+                      "width": 400,
+                      "height": 18,
+                      "textGrowth": "fixed-width-height",
+                      "content": "缺失元素：长效机制、跨部门协作闭环",
+                      "fill": "#D94848",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "p4_chk_p",
+                  "x": 14,
+                  "y": 102,
+                  "width": 438,
+                  "height": 62,
+                  "layout": "none",
+                  "fill": "#F2FBF5",
+                  "cornerRadius": 10,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#CFEFD9"
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "p4_chk_p_t",
+                      "x": 12,
+                      "y": 14,
+                      "width": 408,
+                      "height": 36,
+                      "textGrowth": "fixed-width-height",
+                      "content": "已包含：情绪安抚、信息澄清、应急供水、后续复盘",
+                      "fill": "#2F8F4E",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
